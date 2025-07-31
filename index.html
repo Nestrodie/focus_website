@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Focus: Solo Leveling</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --main-color: #7d5fff;
+      --main-hover: #9275ff;
+      --main-rgb: 125, 95, 255;
+      --bg-color: #1a0a2a;
+      --bg-gradient: linear-gradient(135deg, #1a0a2a 0%, #3a1a5a 100%);
+    }
+    
+    html, body {
+      height: 100%;
+      background: var(--bg-gradient);
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    
+    /* Классы для тем */
+    .theme-default {
+      --main-color: #333333;
+      --main-hover: #555555;
+      --main-rgb: 51, 51, 51;
+      --bg-color: #000000;
+      --bg-gradient: none;
+    }
+    
+    .theme-forest {
+      --main-color: #28b450;
+      --main-hover: #32c45c;
+      --main-rgb: 40, 180, 80;
+      --bg-color: #0d300d;
+      --bg-gradient: linear-gradient(135deg, #0d300d 0%, #1a472a 100%);
+    }
+    
+    .theme-night {
+      --main-color: #7d5fff;
+      --main-hover: #9275ff;
+      --main-rgb: 125, 95, 255;
+      --bg-color: #1a0a2a;
+      --bg-gradient: linear-gradient(135deg, #1a0a2a 0%, #3a1a5a 100%);
+    }
+    
+    .theme-sunset {
+      --main-color: #ff6b6b;
+      --main-hover: #ff8e8e;
+      --main-rgb: 255, 107, 107;
+      --bg-color: #4a0b0e;
+      --bg-gradient: linear-gradient(135deg, #4a0b0e 0%, #aa2c38 100%);
+    }
+    
+    .theme-ocean {
+      --main-color: #1e90ff;
+      --main-hover: #2ea0ff;
+      --main-rgb: 30, 144, 255;
+      --bg-color: #0a2a3a;
+      --bg-gradient: linear-gradient(135deg, #0a2a3a 0%, #1a476a 100%);
+    }
+    
+    .theme-library {
+      --main-color: #d4a96a;
+      --main-hover: #e8c48e;
+      --main-rgb: 212, 169, 106;
+      --bg-color: #3a251a;
+      --bg-gradient: linear-gradient(135deg, #3a251a 0%, #7a5a4c 100%);
+    }
+    
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 0.5s ease;
+      padding: 20px;
+    }
+    
+    .clock {
+      font-size: 5.5em;
+      font-weight: 300;
+      margin-bottom: 40px;
+      color: #e8eaed;
+      letter-spacing: 1px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 15px rgba(var(--main-rgb), 0.8);
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 18px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(20, 25, 35, 0.6);
+      padding: 15px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+    }
+    
+    .btn {
+      background: rgba(var(--main-rgb), 0.85);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn:hover {
+      background: rgba(var(--main-rgb), 0.9);
+      transform: translateY(-2px);
+    }
+    
+    .btn.active {
+      background: rgba(var(--main-rgb), 0.85);
+    }
+    
+    .btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #e8eaed;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: rgba(25, 30, 40, 0.85);
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(80, 85, 95, 0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(80, 85, 95, 0.3);
+    }
+    
+    .modal-title {
+      font-size: 1.6em;
+      margin: 0;
+      color: #e8eaed;
+      font-weight: 600;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.8em;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .close-btn:hover {
+      color: #fff;
+    }
+    
+    .option-group {
+      margin-bottom: 30px;
+    }
+    
+    .option-title {
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      color: #c0c4c8;
+      font-weight: 500;
+    }
+    
+    .option-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      background-color: rgba(40, 45, 50, 0.6);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1em;
+    }
+    
+    .option-item:hover {
+      background-color: rgba(50, 55, 60, 0.8);
+    }
+    
+    .option-item.active {
+      background-color: rgba(var(--main-rgb), 0.6);
+    }
+    
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .timer-btn {
+      padding: 8px 20px;
+      background: rgba(var(--main-rgb), 0.8);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1em;
+      font-weight: 500;
+    }
+    
+    .timer-btn:hover {
+      background: rgba(var(--main-rgb), 0.9);
+    }
+    
+    .timer-display {
+      font-size: 2.5em;
+      text-align: center;
+      margin: 20px 0;
+      font-family: 'Nunito', sans-serif;
+      color: #e8eaed;
+      font-weight: 300;
+    }
+    
+    .timer-input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: rgba(20, 25, 35, 0.8);
+      color: white;
+      font-size: 1em;
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    .timer-presets {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .preset-btn {
+      padding: 6px 14px;
+      background: rgba(var(--main-rgb), 0.8);
+      border: none;
+      border-radius: 6px;
+      color: #e0e0e0;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9em;
+    }
+    
+    .preset-btn:hover {
+      background: rgba(var(--main-rgb), 0.9);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30, 35, 45, 0.95);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: none;
+      font-size: 1em;
+      font-weight: 500;
+      border: 1px solid rgba(80, 85, 95, 0.3);
+    }
+    
+    /* Sound icons styling */
+    .sound-icons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    
+    .sound-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .sound-icon:hover {
+      transform: scale(1.1);
+    }
+    
+    .sound-icon.active {
+      position: relative;
+    }
+    
+    .sound-icon.active svg {
+      fill: var(--main-color);
+    }
+    
+    .sound-icon svg {
+      width: 36px;
+      height: 36px;
+      fill: #e8eaed;
+      margin-bottom: 8px;
+    }
+    
+    .sound-icon span {
+      font-size: 0.7em;
+      text-align: center;
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sound-volume {
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      outline: none;
+      margin-top: 15px;
+      display: none;
+    }
+    
+    .sound-icon.active .sound-volume {
+      display: block;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .clock {
+        font-size: 4.5em;
+      }
+      .btn {
+        width: 46px;
+        height: 46px;
+      }
+      .btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .sound-icons {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .clock {
+        font-size: 3.8em;
+      }
+      .buttons {
+        gap: 12px;
+        padding: 12px;
+      }
+      .btn {
+        width: 42px;
+        height: 42px;
+      }
+      .btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      .timer-display {
+        font-size: 2em;
+      }
+      .sound-icons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .upload-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(var(--main-rgb), 0.8);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .upload-btn:hover {
+      background: rgba(var(--main-rgb), 0.9);
+    }
+    
+    /* New styles for timer sound */
+    .timer-sound-group {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(80, 85, 95, 0.3);
+    }
+    
+    .timer-sound-title {
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      color: #c0c4c8;
+      font-weight: 500;
+    }
+    
+    .timer-sound-option {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .timer-sound-label {
+      flex: 1;
+    }
+    
+    /* Theme options */
+    .theme-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .theme-option {
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .theme-option:hover {
+      transform: scale(1.05);
+    }
+    
+    .theme-option.active {
+      border-color: var(--main-color);
+    }
+    
+    .theme-option::after {
+      content: attr(data-name);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      font-size: 0.8em;
+      text-align: center;
+    }
+    
+    /* Auto-start toggle */
+    .auto-start-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--main-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Settings tabs */
+    .settings-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(80, 85, 95, 0.3);
+    }
+    
+    .settings-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .settings-tab.active {
+      border-bottom: 2px solid var(--main-color);
+      color: var(--main-color);
+    }
+    
+    .settings-content {
+      display: none;
+    }
+    
+    .settings-content.active {
+      display: block;
+    }
+    
+    /* Theme backgrounds */
+    .theme-option[data-theme="default"] {
+      background: #000000;
+    }
+    
+    .theme-option[data-theme="forest"] {
+      background: linear-gradient(135deg, #0d300d 0%, #1a472a 100%);
+    }
+    
+    .theme-option[data-theme="night"] {
+      background: linear-gradient(135deg, #1a0a2a 0%, #3a1a5a 100%);
+    }
+    
+    .theme-option[data-theme="sunset"] {
+      background: linear-gradient(135deg, #4a0b0e 0%, #aa2c38 100%);
+    }
+    
+    .theme-option[data-theme="ocean"] {
+      background: linear-gradient(135deg, #0a2a3a 0%, #1a476a 100%);
+    }
+    
+    .theme-option[data-theme="library"] {
+      background: linear-gradient(135deg, #3a251a 0%, #7a5a4c 100%);
+    }
+    
+    /* Стили для ползунков с использованием переменных темы */
+    input[type="range"] {
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(80, 85, 90, 0.5);
+      outline: none;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--main-color);
+      cursor: pointer;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--main-color);
+      cursor: pointer;
+      border: none;
+    }
+    
+    input[type="range"]::-ms-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--main-color);
+      cursor: pointer;
+      border: none;
+    }
+    
+    /* Для Firefox */
+    input[type="range"]::-moz-range-progress {
+      background-color: var(--main-color);
+      height: 4px;
+      border-radius: 2px;
+    }
+    
+    /* Для IE */
+    input[type="range"]::-ms-fill-lower {
+      background-color: var(--main-color);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="background-container">
+    <div class="clock" id="clock">00:00</div>
+    
+    <div class="buttons">
+      <button class="btn" id="music-btn" title="Music">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path d="M 198 108 Q 192 110 192 116 L 192 216 L 192 216 L 496 122 L 496 122 L 496 16 L 496 16 L 198 108 L 198 108 Z M 512 15 L 512 128 L 512 15 L 512 128 L 512 128 L 512 128 L 512 368 L 512 368 Q 511 402 484 425 Q 457 447 416 448 Q 375 447 348 425 Q 321 402 320 368 Q 321 334 348 311 Q 375 289 416 288 Q 468 290 496 324 L 496 139 L 496 139 L 194 232 L 194 232 Q 193 232 192 232 L 192 432 L 192 432 Q 191 466 164 489 Q 137 511 96 512 Q 55 511 28 489 Q 1 466 0 432 Q 1 398 28 375 Q 55 353 96 352 Q 148 354 176 388 L 176 224 L 176 224 L 176 116 L 176 116 Q 177 99 193 93 L 493 1 L 493 1 Q 495 0 497 0 Q 511 1 512 15 L 512 15 Z M 176 432 Q 175 407 154 388 L 154 388 L 154 388 Q 132 369 96 368 Q 60 369 38 388 Q 17 407 16 432 Q 17 457 38 476 Q 60 495 96 496 Q 132 495 154 476 Q 175 457 176 432 L 176 432 Z M 496 368 Q 495 343 474 324 L 474 324 L 474 324 Q 452 305 416 304 Q 380 305 358 324 Q 337 343 336 368 Q 337 393 358 412 Q 380 431 416 432 Q 452 431 474 412 Q 495 393 496 368 L 496 368 Z"/>
+        </svg>
+      </button>
+
+      <button class="btn" id="timer-btn" title="Timer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path d="M 496 256 Q 495 321 464 376 L 464 376 L 464 376 Q 432 431 376 464 Q 319 496 256 496 Q 193 496 136 464 Q 80 431 48 376 Q 17 321 16 256 Q 17 191 48 136 Q 80 81 136 48 Q 193 16 256 16 Q 319 16 376 48 Q 432 81 464 136 Q 495 191 496 256 L 496 256 Z M 0 256 Q 1 326 34 384 L 34 384 L 34 384 Q 68 442 128 478 Q 189 512 256 512 Q 323 512 384 478 Q 444 442 478 384 Q 511 326 512 256 Q 511 186 478 128 Q 444 70 384 34 Q 323 0 256 0 Q 189 0 128 34 Q 68 70 34 128 Q 1 186 0 256 L 0 256 Z M 248 104 L 248 256 L 248 104 L 248 256 Q 248 260 252 263 L 348 327 L 348 327 Q 354 330 359 325 Q 362 318 357 313 L 264 252 L 264 252 L 264 104 L 264 104 Q 263 97 256 96 Q 249 97 248 104 L 248 104 Z" />
+        </svg>
+      </button>
+
+      <button class="btn" id="settings-btn" title="Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+          <path d="M 212 29 Q 215 17 227 16 L 285 16 L 285 16 Q 297 17 300 29 L 313 86 L 313 86 Q 314 90 318 91 Q 345 102 367 120 Q 371 122 375 121 L 431 104 L 431 104 Q 443 101 449 111 L 478 161 L 478 161 Q 484 172 475 181 L 432 221 L 432 221 Q 429 224 430 228 Q 432 242 432 256 Q 432 271 430 285 Q 429 289 432 292 L 475 332 L 475 332 Q 484 340 478 351 L 449 401 L 449 401 Q 443 411 431 408 L 375 391 L 375 391 Q 371 390 367 392 Q 345 410 318 421 Q 314 422 313 426 L 300 484 L 300 484 Q 297 495 285 496 L 227 496 L 227 496 Q 215 495 212 484 L 199 426 L 199 426 Q 198 422 194 421 Q 167 410 145 392 Q 141 390 137 391 L 81 408 L 81 408 Q 69 411 63 401 L 34 351 L 34 351 Q 28 340 37 331 L 80 291 L 80 291 Q 83 288 82 284 Q 80 271 80 256 Q 80 241 82 228 Q 83 223 80 220 L 37 181 L 37 181 Q 28 172 34 161 L 63 111 L 63 111 Q 69 101 81 104 L 84 96 L 84 96 L 81 104 L 81 104 L 137 121 L 137 121 Q 141 122 145 120 Q 167 102 194 91 Q 198 90 199 86 L 212 29 L 212 29 Z M 227 0 Q 203 2 196 25 L 184 78 L 184 78 Q 159 88 138 105 L 86 89 L 86 89 Q 62 83 49 103 L 20 153 L 20 153 Q 9 175 26 193 L 66 229 L 66 229 Q 64 242 64 256 Q 64 270 66 283 L 26 320 L 26 320 L 31 325 L 31 325 L 26 320 L 26 320 Q 9 337 20 359 L 49 409 L 49 409 Q 62 429 86 424 L 138 407 L 138 407 Q 159 424 184 434 L 196 487 L 196 487 Q 203 511 227 512 L 285 512 L 285 512 Q 309 511 316 487 L 328 434 L 328 434 Q 353 424 374 407 L 426 424 L 426 424 Q 450 429 463 409 L 492 359 L 492 359 Q 503 337 486 320 L 446 283 L 446 283 Q 448 270 448 256 Q 448 242 446 229 L 486 193 L 486 193 Q 503 175 492 153 L 463 103 L 463 103 Q 450 83 426 88 L 374 105 L 374 105 Q 353 88 328 78 L 316 25 L 316 25 Q 309 2 285 0 L 227 0 L 227 0 Z M 176 256 Q 193 220 224 201 Q 256 183 288 201 Q 319 220 320 256 Q 319 292 288 311 Q 256 329 224 311 Q 193 292 192 256 L 192 256 Z M 336 256 Q 335 211 296 187 Q 256 165 216 187 Q 177 211 176 256 Q 177 301 216 325 Q 256 347 296 325 Q 335 301 336 256 L 336 256 Z"/>
+        </svg>
+      </button>
+
+      <button class="btn" id="sound-btn" title="Sound">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path d="M 256 34.5945945945946 Q 262.05405405405406 35.45945945945946 262.9189189189189 41.513513513513516 L 262.9189189189189 470.4864864864865 L 262.9189189189189 470.4864864864865 Q 262.05405405405406 476.5405405405405 256 477.4054054054054 Q 249.94594594594594 476.5405405405405 249.0810810810811 470.4864864864865 L 249.0810810810811 41.513513513513516 L 249.0810810810811 41.513513513513516 Q 249.94594594594594 35.45945945945946 256 34.5945945945946 L 256 34.5945945945946 Z M 422.05405405405406 89.94594594594595 Q 428.1081081081081 90.8108108108108 428.97297297297297 96.86486486486487 L 428.97297297297297 415.13513513513516 L 428.97297297297297 415.13513513513516 Q 428.1081081081081 421.18918918918916 422.05405405405406 422.05405405405406 Q 416 421.18918918918916 415.13513513513516 415.13513513513516 L 415.13513513513516 96.86486486486487 L 415.13513513513516 96.86486486486487 Q 416 90.8108108108108 422.05405405405406 89.94594594594595 L 422.05405405405406 89.94594594594595 Z M 172.97297297297297 117.62162162162163 Q 179.02702702702703 118.48648648648648 179.8918918918919 124.54054054054055 L 179.8918918918919 387.4594594594595 L 179.8918918918919 387.4594594594595 Q 179.02702702702703 393.5135135135135 172.97297297297297 394.3783783783784 Q 166.9189189189189 393.5135135135135 166.05405405405406 387.4594594594595 L 166.05405405405406 124.54054054054055 L 166.05405405405406 124.54054054054055 Q 166.9189189189189 118.48648648648648 172.97297297297297 117.62162162162163 L 172.97297297297297 117.62162162162163 Z M 339.02702702702703 145.2972972972973 Q 345.0810810810811 146.16216216216216 345.94594594594594 152.21621621621622 L 345.94594594594594 359.7837837837838 L 345.94594594594594 359.7837837837838 Q 345.0810810810811 365.8378378378378 339.02702702702703 366.7027027027027 Q 332.97297297297297 365.8378378378378 332.1081081081081 359.7837837837838 L 332.1081081081081 152.21621621621622 L 332.1081081081081 152.21621621621622 Q 332.97297297297297 146.16216216216216 339.02702702702703 145.2972972972973 L 339.02702702702703 145.2972972972973 Z M 89.94594594594595 200.64864864864865 Q 96 201.51351351351352 96.86486486486487 207.56756756756758 L 96.86486486486487 304.43243243243245 L 96.86486486486487 304.43243243243245 Q 96 310.4864864864865 89.94594594594595 311.35135135135135 Q 83.89189189189189 310.4864864864865 83.02702702702703 304.43243243243245 L 83.02702702702703 207.56756756756758 L 83.02702702702703 207.56756756756758 Q 83.89189189189189 201.51351351351352 89.94594594594595 200.64864864864865 L 89.94594594594595 200.64864864864865 Z M 6.918918918918919 228.32432432432432 Q 12.972972972972974 229.1891891891892 13.837837837837839 235.24324324324326 L 13.837837837837839 276.7567567567568 L 13.837837837837839 276.7567567567568 Q 12.972972972972974 282.81081081081084 6.918918918918919 283.6756756756757 Q 0.8648648648648649 282.81081081081084 0 276.7567567567568 L 0 235.24324324324326 L 0 235.24324324324326 Q 0.8648648648648649 229.1891891891892 6.918918918918919 228.32432432432432 L 6.918918918918919 228.32432432432432 Z M 505.0810810810811 228.32432432432432 Q 511.13513513513516 229.1891891891892 512 235.24324324324326 L 512 276.7567567567568 L 512 276.7567567567568 Q 511.13513513513516 282.81081081081084 505.0810810810811 283.6756756756757 Q 499.02702702702703 282.81081081081084 498.1621621621622 276.7567567567568 L 498.1621621621622 235.24324324324326 L 498.1621621621622 235.24324324324326 Q 499.02702702702703 229.1891891891892 505.0810810810811 228.32432432432432 L 505.0810810810811 228.32432432432432 Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Настройки</h2>
+        <button class="close-btn" id="close-settings">&times;</button>
+      </div>
+      
+      <!-- Settings tabs -->
+      <div class="settings-tabs">
+        <div class="settings-tab active" data-tab="background">Фон</div>
+        <div class="settings-tab" data-tab="timer">Таймер</div>
+      </div>
+      
+      <!-- Background settings -->
+      <div class="settings-content active" id="background-content">
+        <div class="option-group">
+          <h3 class="option-title">Выберите изображение или GIF</h3>
+          <input type="file" id="bg-upload" accept="image/*, .gif" style="display: none;">
+          <div class="option-item" id="upload-bg">
+            <span>Загрузить со своего компьютера</span>
+          </div>
+          
+          <!-- Theme options -->
+          <h3 class="option-title" style="margin-top: 25px;">Выберите тему</h3>
+          <div class="theme-options">
+            <div class="theme-option" data-theme="default" data-name="По умолчанию"></div>
+            <div class="theme-option" data-theme="forest" data-name="Лес"></div>
+            <div class="theme-option" data-theme="night" data-name="Ночь"></div>
+            <div class="theme-option" data-theme="sunset" data-name="Закат"></div>
+            <div class="theme-option" data-theme="ocean" data-name="Океан"></div>
+            <div class="theme-option" data-theme="library" data-name="Библиотека"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Timer settings -->
+      <div class="settings-content" id="timer-content">
+        <div class="option-group">
+          <h3 class="option-title">Настройки звука таймера</h3>
+          
+          <div class="timer-sound-option">
+            <span class="timer-sound-label">Стандартный звук</span>
+            <audio id="preview-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+            <button class="timer-btn" id="preview-btn">Прослушать</button>
+          </div>
+          
+          <div class="timer-sound-option">
+            <span class="timer-sound-label">Громкость звука</span>
+            <input type="range" id="timer-sound-volume" min="0" max="1" step="0.01" value="0.5">
+          </div>
+          
+          <!-- Новый блок для загрузки своего звука -->
+          <div class="timer-sound-option">
+            <span class="timer-sound-label">Загрузить свой звук</span>
+            <input type="file" id="timer-sound-upload" accept="audio/*" style="display: none;">
+            <button class="timer-btn" id="upload-timer-sound">Выбрать</button>
+            <button class="timer-btn" id="reset-timer-sound">Сбросить</button>
+          </div>
+          
+          <div class="auto-start-toggle">
+            <span>Автостарт следующего таймера</span>
+            <label class="switch">
+              <input type="checkbox" id="auto-restart">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="music-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Музыкальный плеер</h2>
+        <button class="close-btn" id="close-music">&times;</button>
+      </div>
+      <div class="option-group">
+        <h3 class="option-title">Вставьте ссылку</h3>
+        <input type="text" id="music-link" class="timer-input" placeholder="https://...">
+        <button class="timer-btn" id="play-music">Воспроизвести</button>
+        <div id="player" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="sound-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Фоновые звуки</h2>
+        <button class="close-btn" id="close-sound">&times;</button>
+      </div>
+      <div class="option-group">
+        <h3 class="option-title">Выберите звук</h3>
+        <div class="sound-icons" id="sound-icons">
+          <!-- Костер -->
+          <div class="sound-icon" data-sound="fire">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 283.7292069632495 102.99419729206963 Q 288.6808510638298 108.93617021276596 296.6034816247582 108.93617021276596 Q 304.52611218568666 108.93617021276596 308.48742746615085 102.99419729206963 Q 325.3230174081238 81.20696324951643 344.1392649903288 62.39071566731141 Q 347.11025145067697 60.4100580270793 350.08123791102514 62.39071566731141 Q 399.5976789168279 111.90715667311412 430.29787234042556 175.28820116054158 Q 445.15280464216636 204.9980657640232 453.0754352030948 231.73694390715667 Q 461.98839458413926 259.4661508704062 461.98839458413926 278.28239845261123 Q 460.99806576402324 338.6924564796905 434.25918762088975 388.20889748549325 Q 406.52998065764024 436.7350096711799 359.9845261121857 466.4448742746615 Q 313.4390715667311 495.1644100580271 256 496.1547388781431 Q 167.86073500967117 494.174081237911 110.42166344294004 431.7833655705996 Q 51.992263056092845 370.3829787234043 50.011605415860735 279.27272727272725 Q 51.00193423597679 225.79497098646036 92.59574468085107 156.47195357833655 Q 134.18955512572535 86.15860735009672 202.52224371373308 21.78723404255319 Q 205.49323017408125 19.806576402321085 208.4642166344294 21.78723404255319 Q 249.0676982591876 59.41972920696325 283.7292069632495 102.99419729206963 L 283.7292069632495 102.99419729206963 Z M 296.6034816247582 93.0909090909091 Q 291.65183752417795 87.14893617021276 285.7098646034816 81.20696324951643 Q 255.00967117988395 43.57446808510638 219.357833655706 10.893617021276595 Q 205.49323017408125 0 191.6286266924565 9.903288201160542 Q 121.31528046421663 76.25531914893617 78.7311411992263 148.5493230174081 Q 36.14700193423597 219.852998065764 34.16634429400387 279.27272727272725 Q 35.156673114119926 342.6537717601547 63.87620889748549 395.1411992263056 Q 93.58607350096712 447.62862669245646 143.10251450676984 479.3191489361702 Q 193.6092843326886 511.0096711798839 256 512 Q 318.39071566731144 511.0096711798839 367.9071566731141 479.3191489361702 Q 418.41392649903287 447.62862669245646 448.12379110251453 395.1411992263056 Q 476.84332688588006 342.6537717601547 477.83365570599614 279.27272727272725 Q 477.83365570599614 256.495164410058 468.9206963249516 227.77562862669245 Q 460.00773694390716 199.0560928433269 444.1624758220503 168.3558994197292 Q 429.3075435203095 136.66537717601548 407.5203094777563 105.9651837524178 Q 386.72340425531917 76.25531914893617 360.97485493230175 51.497098646034814 Q 347.11025145067697 39.61315280464217 333.24564796905224 51.497098646034814 Q 318.39071566731144 64.37137330754352 306.50676982591875 81.20696324951643 Q 301.5551257253385 87.14893617021276 296.6034816247582 94.08123791102514 L 296.6034816247582 93.0909090909091 Z M 335.22630560928434 409.00580270793034 L 335.22630560928434 409.00580270793034 L 335.22630560928434 409.00580270793034 L 335.22630560928434 409.00580270793034 L 335.22630560928434 409.00580270793034 L 335.22630560928434 409.00580270793034 Q 374.8394584139265 379.29593810444874 380.7814313346228 332.7504835589942 Q 386.72340425531917 286.2050290135397 362.95551257253385 246.59187620889747 Q 356.0232108317215 235.6982591876209 344.1392649903288 235.6982591876209 Q 333.24564796905224 234.70793036750484 325.3230174081238 243.62088974854933 L 294.6228239845261 279.27272727272725 L 294.6228239845261 279.27272727272725 L 294.6228239845261 279.27272727272725 L 294.6228239845261 279.27272727272725 Q 284.7195357833656 267.3887814313346 270.8549323017408 250.5531914893617 Q 257.9806576402321 233.71760154738877 246.09671179883946 217.87234042553192 Q 234.2127659574468 202.02707930367504 226.29013539651837 193.11411992263055 Q 218.36750483558995 184.20116054158606 207.47388781431334 184.20116054158606 Q 196.58027079303676 184.20116054158606 189.64796905222437 193.11411992263055 Q 160.9284332688588 226.7852998065764 145.08317214700193 253.52417794970987 Q 129.23791102514508 281.2533849129594 129.23791102514508 308.9825918762089 Q 130.22823984526113 366.42166344294003 166.87040618955513 400.0928433268859 Q 204.50290135396517 432.77369439071566 257.9806576402321 432.77369439071566 Q 299.5744680851064 432.77369439071566 334.23597678916826 409.00580270793034 L 335.22630560928434 409.00580270793034 Z M 350.08123791102514 254.5145067698259 Q 370.8781431334623 290.16634429400386 364.93617021276594 330.7698259187621 L 364.93617021276594 330.7698259187621 L 364.93617021276594 330.7698259187621 Q 359.9845261121857 370.3829787234043 326.3133462282398 396.13152804642164 Q 294.6228239845261 416.9284332688588 257.9806576402321 416.9284332688588 Q 209.45454545454547 416.9284332688588 177.7640232108317 388.20889748549325 Q 146.07350096711798 360.4796905222437 145.08317214700193 308.9825918762089 Q 145.08317214700193 286.2050290135397 158.9477756286267 261.4468085106383 Q 172.81237911025144 236.68858800773694 201.53191489361703 203.0174081237911 Q 207.47388781431334 197.07543520309477 213.41586073500966 203.0174081237911 Q 221.3384912959381 211.9303675048356 234.2127659574468 228.7659574468085 Q 246.09671179883946 244.61121856866538 258.9709864603482 260.45647969052226 Q 272.8355899419729 277.29206963249516 281.7485493230174 289.1760154738878 Q 293.63249516441005 301.0599613152805 306.50676982591875 290.16634429400386 L 337.20696324951643 253.52417794970987 L 337.20696324951643 253.52417794970987 Q 344.1392649903288 247.58220502901355 350.08123791102514 254.5145067698259 L 350.08123791102514 254.5145067698259 Z"/>
+            </svg>
+            <span>Костер</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Волны -->
+          <div class="sound-icon" data-sound="waves">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 270.22222222222223 81.77777777777777 Q 207.11111111111111 83.55555555555556 164.44444444444446 125.33333333333333 L 164.44444444444446 125.33333333333333 L 164.44444444444446 125.33333333333333 Q 122.66666666666667 168 120.88888888888889 231.11111111111111 Q 120 270.22222222222223 94.22222222222223 296.8888888888889 Q 67.55555555555556 322.6666666666667 28.444444444444443 323.55555555555554 Q 22.22222222222222 322.6666666666667 21.333333333333332 316.44444444444446 Q 22.22222222222222 310.22222222222223 28.444444444444443 309.3333333333333 Q 61.333333333333336 308.44444444444446 83.55555555555556 286.22222222222223 Q 105.77777777777777 264 106.66666666666667 231.11111111111111 Q 108.44444444444444 161.77777777777777 154.66666666666666 115.55555555555556 Q 200.88888888888889 69.33333333333333 270.22222222222223 67.55555555555556 Q 312 67.55555555555556 346.6666666666667 86.22222222222223 Q 381.3333333333333 104.88888888888889 404.44444444444446 136.88888888888889 Q 407.1111111111111 141.33333333333334 403.55555555555554 145.77777777777777 Q 400 149.33333333333334 395.55555555555554 147.55555555555554 Q 376.8888888888889 138.66666666666666 355.55555555555554 138.66666666666666 Q 316.44444444444446 139.55555555555554 289.77777777777777 166.22222222222223 Q 264 192 263.1111111111111 231.11111111111111 Q 264 264 286.22222222222223 286.22222222222223 Q 308.44444444444446 308.44444444444446 341.3333333333333 309.3333333333333 L 341.3333333333333 309.3333333333333 L 341.3333333333333 309.3333333333333 Q 356.44444444444446 309.3333333333333 370.6666666666667 301.3333333333333 Q 384.8888888888889 293.3333333333333 396.44444444444446 282.6666666666667 Q 409.77777777777777 270.22222222222223 420.44444444444446 256 Q 423.1111111111111 252.44444444444446 426.6666666666667 252.44444444444446 Q 430.22222222222223 252.44444444444446 432.8888888888889 256 Q 442.6666666666667 269.3333333333333 455.1111111111111 280.8888888888889 Q 476.44444444444446 303.1111111111111 505.77777777777777 309.3333333333333 Q 512 310.22222222222223 512 317.3333333333333 Q 510.22222222222223 323.55555555555554 504 322.6666666666667 Q 486.22222222222223 320.8888888888889 471.1111111111111 311.1111111111111 Q 456 301.3333333333333 445.3333333333333 290.6666666666667 Q 432.8888888888889 279.1111111111111 426.6666666666667 271.1111111111111 Q 419.55555555555554 280 406.22222222222223 293.3333333333333 Q 393.77777777777777 304.8888888888889 376.8888888888889 313.77777777777777 Q 360.8888888888889 322.6666666666667 341.3333333333333 323.55555555555554 L 341.3333333333333 323.55555555555554 L 341.3333333333333 323.55555555555554 Q 302.22222222222223 322.6666666666667 275.55555555555554 296.8888888888889 Q 249.77777777777777 270.22222222222223 248.88888888888889 231.11111111111111 Q 249.77777777777777 185.77777777777777 280 155.55555555555554 Q 310.22222222222223 125.33333333333333 355.55555555555554 124.44444444444444 Q 366.22222222222223 124.44444444444444 376.8888888888889 126.22222222222223 Q 334.22222222222223 83.55555555555556 270.22222222222223 81.77777777777777 L 270.22222222222223 81.77777777777777 Z M 286.22222222222223 403.55555555555554 Q 297.77777777777777 414.22222222222223 312 422.22222222222223 L 312 422.22222222222223 L 312 422.22222222222223 Q 326.22222222222223 430.22222222222223 341.3333333333333 430.22222222222223 Q 356.44444444444446 430.22222222222223 370.6666666666667 422.22222222222223 Q 384.8888888888889 414.22222222222223 396.44444444444446 403.55555555555554 Q 409.77777777777777 391.1111111111111 420.44444444444446 376 Q 423.1111111111111 373.3333333333333 426.6666666666667 373.3333333333333 Q 430.22222222222223 373.3333333333333 432.8888888888889 376 Q 442.6666666666667 390.22222222222223 455.1111111111111 401.77777777777777 Q 476.44444444444446 424 505.77777777777777 430.22222222222223 Q 512 431.1111111111111 512 437.3333333333333 Q 510.22222222222223 444.44444444444446 504 443.55555555555554 Q 486.22222222222223 440.8888888888889 471.1111111111111 432 Q 456 422.22222222222223 445.3333333333333 411.55555555555554 Q 432.8888888888889 400 426.6666666666667 392 Q 419.55555555555554 400.8888888888889 406.22222222222223 414.22222222222223 Q 393.77777777777777 425.77777777777777 376.8888888888889 434.6666666666667 Q 360.8888888888889 443.55555555555554 341.3333333333333 444.44444444444446 Q 321.77777777777777 443.55555555555554 305.77777777777777 434.6666666666667 Q 288.8888888888889 425.77777777777777 276.44444444444446 414.22222222222223 Q 263.1111111111111 400.8888888888889 256 392 L 256 392 L 256 392 L 256 392 L 256 392 Q 248.88888888888889 400.8888888888889 235.55555555555554 414.22222222222223 Q 223.11111111111111 425.77777777777777 206.22222222222223 434.6666666666667 Q 190.22222222222223 443.55555555555554 170.66666666666666 444.44444444444446 Q 151.11111111111111 443.55555555555554 135.11111111111111 434.6666666666667 Q 118.22222222222223 425.77777777777777 105.77777777777777 414.22222222222223 Q 92.44444444444444 400.8888888888889 85.33333333333333 392 Q 79.11111111111111 400 66.66666666666667 411.55555555555554 Q 56 422.22222222222223 40.888888888888886 432 Q 25.77777777777778 440.8888888888889 8 443.55555555555554 Q 1.7777777777777777 444.44444444444446 0 438.22222222222223 Q 0 431.1111111111111 6.222222222222222 430.22222222222223 Q 35.55555555555556 424 56.888888888888886 401.77777777777777 Q 69.33333333333333 390.22222222222223 79.11111111111111 376 Q 81.77777777777777 373.3333333333333 85.33333333333333 373.3333333333333 Q 88.88888888888889 373.3333333333333 91.55555555555556 376 Q 102.22222222222223 391.1111111111111 115.55555555555556 403.55555555555554 Q 127.11111111111111 414.22222222222223 141.33333333333334 422.22222222222223 Q 155.55555555555554 430.22222222222223 170.66666666666666 430.22222222222223 Q 185.77777777777777 430.22222222222223 200 422.22222222222223 Q 214.22222222222223 414.22222222222223 225.77777777777777 403.55555555555554 Q 239.11111111111111 391.1111111111111 249.77777777777777 376 Q 256 370.6666666666667 262.22222222222223 376 Q 272.8888888888889 391.1111111111111 286.22222222222223 403.55555555555554 L 286.22222222222223 403.55555555555554 Z M 267.90697674418607 342.3255813953488 L 319.50387596899225 238.13953488372093 L 267.90697674418607 342.3255813953488 L 319.50387596899225 238.13953488372093 L 160.74418604651163 365.14728682170545 L 160.74418604651163 365.14728682170545 L 230.2015503875969 365.14728682170545 L 230.2015503875969 365.14728682170545 Q 239.13178294573643 365.14728682170545 244.09302325581396 373.08527131782944 Q 248.06201550387595 380.031007751938 244.09302325581396 387.968992248062 L 192.49612403100775 492.15503875968994 L 192.49612403100775 492.15503875968994 L 351.25581395348837 365.14728682170545 L 351.25581395348837 365.14728682170545 L 281.7984496124031 365.14728682170545 L 281.7984496124031 365.14728682170545 Q 272.86821705426354 365.14728682170545 267.90697674418607 357.2093023255814 Q 263.93798449612405 350.26356589147287 267.90697674418607 342.3255813953488 L 267.90697674418607 342.3255813953488 Z M 333.3953488372093 245.08527131782947 L 289.73643410852713 333.3953488372093 L 333.3953488372093 245.08527131782947 L 289.73643410852713 333.3953488372093 L 281.7984496124031 349.27131782945736 L 281.7984496124031 349.27131782945736 L 299.6589147286822 349.27131782945736 L 351.25581395348837 349.27131782945736 Q 362.17054263565893 350.26356589147287 366.13953488372096 360.1860465116279 Q 369.1162790697674 370.1085271317829 361.1782945736434 378.04651162790697 L 202.41860465116278 505.05426356589146 L 202.41860465116278 505.05426356589146 Q 192.49612403100775 512 182.57364341085272 504.06201550387595 Q 173.64341085271317 496.1240310077519 178.6046511627907 485.2093023255814 L 222.26356589147287 396.8992248062016 L 222.26356589147287 396.8992248062016 L 230.2015503875969 381.0232558139535 L 230.2015503875969 381.0232558139535 L 212.34108527131784 381.0232558139535 L 160.74418604651163 381.0232558139535 Q 149.8294573643411 380.031007751938 145.86046511627907 370.1085271317829 Q 142.88372093023256 360.1860465116279 150.8217054263566 353.2403100775194 L 309.5813953488372 226.2325581395349 L 309.5813953488372 226.2325581395349 Q 319.50387596899225 218.29457364341084 329.4263565891473 226.2325581395349 Q 338.3565891472868 234.1705426356589 333.3953488372093 245.08527131782947 L 333.3953488372093 245.08527131782947 Z" />
+            </svg>
+            <span>Волны</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Тихий дождь -->
+          <div class="sound-icon" data-sound="light-rain">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 286.22222222222223 124 Q 272.8888888888889 111.55555555555556 262.22222222222223 96.44444444444444 Q 256 91.11111111111111 249.77777777777777 96.44444444444444 Q 239.11111111111111 111.55555555555556 225.77777777777777 124 Q 214.22222222222223 134.66666666666666 200 142.66666666666666 Q 185.77777777777777 150.66666666666666 170.66666666666666 150.66666666666666 Q 155.55555555555554 150.66666666666666 141.33333333333334 142.66666666666666 Q 127.11111111111111 134.66666666666666 115.55555555555556 124 Q 102.22222222222223 111.55555555555556 91.55555555555556 96.44444444444444 Q 88.88888888888889 93.77777777777777 85.33333333333333 93.77777777777777 Q 81.77777777777777 93.77777777777777 79.11111111111111 96.44444444444444 Q 69.33333333333333 110.66666666666667 56.888888888888886 122.22222222222223 Q 35.55555555555556 144.44444444444446 6.222222222222222 150.66666666666666 Q 0 151.55555555555554 0 158.66666666666666 Q 1.7777777777777777 164.88888888888889 8 164 Q 25.77777777777778 161.33333333333334 40.888888888888886 152.44444444444446 Q 56 142.66666666666666 66.66666666666667 132 Q 79.11111111111111 120.44444444444444 85.33333333333333 112.44444444444444 Q 92.44444444444444 121.33333333333333 105.77777777777777 134.66666666666666 Q 118.22222222222223 146.22222222222223 135.11111111111111 155.11111111111111 Q 151.11111111111111 164 170.66666666666666 164.88888888888889 Q 190.22222222222223 164 206.22222222222223 155.11111111111111 Q 223.11111111111111 146.22222222222223 235.55555555555554 134.66666666666666 Q 248.88888888888889 121.33333333333333 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 Q 263.1111111111111 121.33333333333333 276.44444444444446 134.66666666666666 Q 288.8888888888889 146.22222222222223 305.77777777777777 155.11111111111111 Q 321.77777777777777 164 341.3333333333333 164.88888888888889 Q 360.8888888888889 164 376.8888888888889 155.11111111111111 Q 393.77777777777777 146.22222222222223 406.22222222222223 134.66666666666666 Q 419.55555555555554 121.33333333333333 426.6666666666667 112.44444444444444 Q 432.8888888888889 120.44444444444444 445.3333333333333 132 Q 456 142.66666666666666 471.1111111111111 152.44444444444446 Q 486.22222222222223 161.33333333333334 504 164 Q 510.22222222222223 164.88888888888889 512 158.66666666666666 Q 512 151.55555555555554 505.77777777777777 150.66666666666666 Q 476.44444444444446 144.44444444444446 455.1111111111111 122.22222222222223 Q 442.6666666666667 110.66666666666667 432.8888888888889 96.44444444444444 Q 430.22222222222223 93.77777777777777 426.6666666666667 93.77777777777777 Q 423.1111111111111 93.77777777777777 420.44444444444446 96.44444444444444 Q 409.77777777777777 111.55555555555556 396.44444444444446 124 Q 384.8888888888889 134.66666666666666 370.6666666666667 142.66666666666666 Q 356.44444444444446 150.66666666666666 341.3333333333333 150.66666666666666 Q 326.22222222222223 150.66666666666666 312 142.66666666666666 Q 297.77777777777777 134.66666666666666 286.22222222222223 124 L 286.22222222222223 124 Z M 286.22222222222223 380 Q 272.8888888888889 367.55555555555554 262.22222222222223 352.44444444444446 Q 256 347.1111111111111 249.77777777777777 352.44444444444446 Q 239.11111111111111 367.55555555555554 225.77777777777777 380 Q 214.22222222222223 390.6666666666667 200 398.6666666666667 Q 185.77777777777777 406.6666666666667 170.66666666666666 406.6666666666667 Q 155.55555555555554 406.6666666666667 141.33333333333334 398.6666666666667 Q 127.11111111111111 390.6666666666667 115.55555555555556 380 Q 102.22222222222223 367.55555555555554 91.55555555555556 352.44444444444446 Q 88.88888888888889 349.77777777777777 85.33333333333333 349.77777777777777 Q 81.77777777777777 349.77777777777777 79.11111111111111 352.44444444444446 Q 69.33333333333333 366.6666666666667 56.888888888888886 378.22222222222223 Q 35.55555555555556 400.44444444444446 6.222222222222222 406.6666666666667 Q 0 407.55555555555554 0 414.6666666666667 Q 1.7777777777777777 420.8888888888889 8 420 Q 25.77777777777778 417.3333333333333 40.888888888888886 408.44444444444446 Q 56 398.6666666666667 66.66666666666667 388 Q 79.11111111111111 376.44444444444446 85.33333333333333 368.44444444444446 Q 92.44444444444444 377.3333333333333 105.77777777777777 390.6666666666667 Q 118.22222222222223 402.22222222222223 135.11111111111111 411.1111111111111 Q 151.11111111111111 420 170.66666666666666 420.8888888888889 Q 190.22222222222223 420 206.22222222222223 411.1111111111111 Q 223.11111111111111 402.22222222222223 235.55555555555554 390.6666666666667 Q 248.88888888888889 377.3333333333333 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 Q 263.1111111111111 377.3333333333333 276.44444444444446 390.6666666666667 Q 288.8888888888889 402.22222222222223 305.77777777777777 411.1111111111111 Q 321.77777777777777 420 341.3333333333333 420.8888888888889 Q 360.8888888888889 420 376.8888888888889 411.1111111111111 Q 393.77777777777777 402.22222222222223 406.22222222222223 390.6666666666667 Q 419.55555555555554 377.3333333333333 426.6666666666667 368.44444444444446 Q 432.8888888888889 376.44444444444446 445.3333333333333 388 Q 456 398.6666666666667 471.1111111111111 408.44444444444446 Q 486.22222222222223 417.3333333333333 504 420 Q 510.22222222222223 420.8888888888889 512 414.6666666666667 Q 512 407.55555555555554 505.77777777777777 406.6666666666667 Q 476.44444444444446 400.44444444444446 455.1111111111111 378.22222222222223 Q 442.6666666666667 366.6666666666667 432.8888888888889 352.44444444444446 Q 430.22222222222223 349.77777777777777 426.6666666666667 349.77777777777777 Q 423.1111111111111 349.77777777777777 420.44444444444446 352.44444444444446 Q 409.77777777777777 367.55555555555554 396.44444444444446 380 Q 384.8888888888889 390.6666666666667 370.6666666666667 398.6666666666667 Q 356.44444444444446 406.6666666666667 341.3333333333333 406.6666666666667 Q 326.22222222222223 406.6666666666667 312 398.6666666666667 Q 297.77777777777777 390.6666666666667 286.22222222222223 380 L 286.22222222222223 380 Z" />
+            </svg>
+            <span>Тихий дождь</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Сильный дождь -->
+          <div class="sound-icon" data-sound="heavy-rain">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 399.4396887159533 124.5136186770428 Q 400.43579766536965 118.53696498054475 400.43579766536965 111.56420233463035 Q 399.4396887159533 84.6692607003891 381.50972762645915 66.73929961089495 Q 363.579766536965 48.809338521400775 336.68482490272373 47.81322957198444 Q 306.80155642023345 48.809338521400775 287.87548638132296 69.72762645914396 Q 282.89494163424126 76.70038910505836 274.9260700389105 75.70428015564202 Q 265.96108949416345 74.70817120622569 261.97665369649803 66.73929961089495 Q 250.02334630350194 43.82879377431907 227.11284046692606 29.883268482490273 Q 205.19844357976655 15.937743190661479 177.30739299610894 15.937743190661479 Q 136.4669260700389 16.93385214007782 109.57198443579766 43.82879377431907 Q 82.67704280155642 70.72373540856032 81.68093385214007 111.56420233463035 Q 81.68093385214007 120.52918287937743 83.67315175097276 129.4941634241245 Q 84.6692607003891 142.44357976653697 72.715953307393 147.42412451361866 Q 48.809338521400775 155.3929961089494 33.86770428015564 176.3112840466926 Q 17.929961089494164 196.23346303501947 17.929961089494164 223.1284046692607 Q 18.926070038910506 256.99610894941634 40.840466926070036 279.9066147859922 Q 63.750972762645915 301.82101167315176 97.61867704280155 302.8171206225681 L 416.3735408560311 302.8171206225681 L 416.3735408560311 302.8171206225681 Q 450.24124513618676 301.82101167315176 473.15175097276267 279.9066147859922 Q 495.0661478599222 256.99610894941634 496.0622568093385 223.1284046692607 Q 495.0661478599222 189.26070038910507 473.15175097276267 166.3501945525292 Q 450.24124513618676 144.43579766536965 416.3735408560311 143.4396887159533 Q 416.3735408560311 143.4396887159533 415.3774319066148 143.4396887159533 Q 415.3774319066148 143.4396887159533 415.3774319066148 143.4396887159533 Q 407.408560311284 143.4396887159533 402.4280155642023 137.46303501945525 Q 397.44747081712063 131.4863813229572 399.4396887159533 124.5136186770428 L 399.4396887159533 124.5136186770428 Z M 177.30739299610894 0 Q 235.0817120622568 1.9922178988326849 266.9571984435798 45.82101167315175 Q 271.9377431906615 52.793774319066145 275.92217898832683 59.766536964980546 Q 281.8988326848249 53.78988326848249 287.87548638132296 48.809338521400775 Q 308.79377431906613 32.8715953307393 336.68482490272373 31.875486381322958 Q 370.55252918287937 32.8715953307393 393.4630350194553 54.78599221789883 Q 415.3774319066148 77.6964980544747 416.3735408560311 111.56420233463035 Q 416.3735408560311 119.53307392996109 414.38132295719845 127.50194552529183 Q 415.3774319066148 127.50194552529183 415.3774319066148 127.50194552529183 Q 423.3463035019455 127.50194552529183 431.31517509727627 128.49805447470817 Q 466.17898832684824 134.47470817120623 489.08949416342415 160.37354085603113 Q 511.00389105058366 186.27237354085602 512 223.1284046692607 Q 511.00389105058366 263.9688715953307 484.1089494163424 290.863813229572 Q 457.2140077821012 317.75875486381324 416.3735408560311 318.7548638132296 L 97.61867704280155 318.7548638132296 L 97.61867704280155 318.7548638132296 Q 56.778210116731515 317.75875486381324 29.883268482490273 290.863813229572 Q 2.9883268482490273 263.9688715953307 1.9922178988326849 223.1284046692607 Q 2.9883268482490273 191.25291828793775 20.91828793774319 166.3501945525292 Q 38.84824902723735 142.44357976653697 67.73540856031128 132.48249027237355 Q 65.7431906614786 122.52140077821012 65.7431906614786 111.56420233463035 Q 66.73929961089495 63.750972762645915 98.6147859922179 32.8715953307393 Q 129.4941634241245 0.9961089494163424 177.30739299610894 0 L 177.30739299610894 0 Z M 88.65369649805447 362.58365758754866 L 16.93385214007782 506.02334630350197 L 88.65369649805447 362.58365758754866 L 16.93385214007782 506.02334630350197 Q 12.949416342412452 512 5.976653696498055 509.011673151751 Q 0 505.0272373540856 2.9883268482490273 499.05058365758754 L 74.70817120622569 355.6108949416342 L 74.70817120622569 355.6108949416342 Q 78.69260700389106 348.63813229571986 85.66536964980544 351.6264591439689 Q 91.6420233463035 355.6108949416342 88.65369649805447 362.58365758754866 L 88.65369649805447 362.58365758754866 Z M 208.18677042801556 362.58365758754866 L 136.4669260700389 506.02334630350197 L 208.18677042801556 362.58365758754866 L 136.4669260700389 506.02334630350197 Q 132.48249027237355 512 126.50583657587549 509.011673151751 Q 119.53307392996109 505.0272373540856 122.52140077821012 499.05058365758754 L 194.24124513618676 355.6108949416342 L 194.24124513618676 355.6108949416342 Q 198.22568093385215 348.63813229571986 205.19844357976655 351.6264591439689 Q 211.17509727626458 355.6108949416342 208.18677042801556 362.58365758754866 L 208.18677042801556 362.58365758754866 Z M 319.7509727626459 362.58365758754866 L 248.03112840466926 506.02334630350197 L 319.7509727626459 362.58365758754866 L 248.03112840466926 506.02334630350197 Q 244.0466926070039 512 238.07003891050584 509.011673151751 Q 231.09727626459144 505.0272373540856 234.08560311284046 499.05058365758754 L 305.8054474708171 355.6108949416342 L 305.8054474708171 355.6108949416342 Q 309.78988326848247 348.63813229571986 316.7626459143969 351.6264591439689 Q 322.73929961089493 355.6108949416342 319.7509727626459 362.58365758754866 L 319.7509727626459 362.58365758754866 Z M 439.284046692607 362.58365758754866 L 367.56420233463035 506.02334630350197 L 439.284046692607 362.58365758754866 L 367.56420233463035 506.02334630350197 Q 363.579766536965 512 357.6031128404669 509.011673151751 Q 350.63035019455253 505.0272373540856 353.61867704280155 499.05058365758754 L 425.33852140077823 355.6108949416342 L 425.33852140077823 355.6108949416342 Q 429.3229571984436 348.63813229571986 436.29571984435796 351.6264591439689 Q 442.27237354085605 355.6108949416342 439.284046692607 362.58365758754866 L 439.284046692607 362.58365758754866 Z" />
+            </svg>
+            <span>Сильный дождь</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Дождь с грозой -->
+          <div class="sound-icon" data-sound="thunder-rain">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 286.22222222222223 124 Q 272.8888888888889 111.55555555555556 262.22222222222223 96.44444444444444 Q 256 91.11111111111111 249.77777777777777 96.44444444444444 Q 239.11111111111111 111.55555555555556 225.77777777777777 124 Q 214.22222222222223 134.66666666666666 200 142.66666666666666 Q 185.77777777777777 150.66666666666666 170.66666666666666 150.66666666666666 Q 155.55555555555554 150.66666666666666 141.33333333333334 142.66666666666666 Q 127.11111111111111 134.66666666666666 115.55555555555556 124 Q 102.22222222222223 111.55555555555556 91.55555555555556 96.44444444444444 Q 88.88888888888889 93.77777777777777 85.33333333333333 93.77777777777777 Q 81.77777777777777 93.77777777777777 79.11111111111111 96.44444444444444 Q 69.33333333333333 110.66666666666667 56.888888888888886 122.22222222222223 Q 35.55555555555556 144.44444444444446 6.222222222222222 150.66666666666666 Q 0 151.55555555555554 0 158.66666666666666 Q 1.7777777777777777 164.88888888888889 8 164 Q 25.77777777777778 161.33333333333334 40.888888888888886 152.44444444444446 Q 56 142.66666666666666 66.66666666666667 132 Q 79.11111111111111 120.44444444444444 85.33333333333333 112.44444444444444 Q 92.44444444444444 121.33333333333333 105.77777777777777 134.66666666666666 Q 118.22222222222223 146.22222222222223 135.11111111111111 155.11111111111111 Q 151.11111111111111 164 170.66666666666666 164.88888888888889 Q 190.22222222222223 164 206.22222222222223 155.11111111111111 Q 223.11111111111111 146.22222222222223 235.55555555555554 134.66666666666666 Q 248.88888888888889 121.33333333333333 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 Q 263.1111111111111 121.33333333333333 276.44444444444446 134.66666666666666 Q 288.8888888888889 146.22222222222223 305.77777777777777 155.11111111111111 Q 321.77777777777777 164 341.3333333333333 164.88888888888889 Q 360.8888888888889 164 376.8888888888889 155.11111111111111 Q 393.77777777777777 146.22222222222223 406.22222222222223 134.66666666666666 Q 419.55555555555554 121.33333333333333 426.6666666666667 112.44444444444444 Q 432.8888888888889 120.44444444444444 445.3333333333333 132 Q 456 142.66666666666666 471.1111111111111 152.44444444444446 Q 486.22222222222223 161.33333333333334 504 164 Q 510.22222222222223 164.88888888888889 512 158.66666666666666 Q 512 151.55555555555554 505.77777777777777 150.66666666666666 Q 476.44444444444446 144.44444444444446 455.1111111111111 122.22222222222223 Q 442.6666666666667 110.66666666666667 432.8888888888889 96.44444444444444 Q 430.22222222222223 93.77777777777777 426.6666666666667 93.77777777777777 Q 423.1111111111111 93.77777777777777 420.44444444444446 96.44444444444444 Q 409.77777777777777 111.55555555555556 396.44444444444446 124 Q 384.8888888888889 134.66666666666666 370.6666666666667 142.66666666666666 Q 356.44444444444446 150.66666666666666 341.3333333333333 150.66666666666666 Q 326.22222222222223 150.66666666666666 312 142.66666666666666 Q 297.77777777777777 134.66666666666666 286.22222222222223 124 L 286.22222222222223 124 Z M 262.22222222222223 224.44444444444446 Q 256 219.11111111111111 249.77777777777777 224.44444444444446 Q 239.11111111111111 239.55555555555554 225.77777777777777 252 Q 214.22222222222223 262.6666666666667 200 270.6666666666667 Q 185.77777777777777 278.6666666666667 170.66666666666666 278.6666666666667 Q 155.55555555555554 278.6666666666667 141.33333333333334 270.6666666666667 Q 127.11111111111111 262.6666666666667 115.55555555555556 252 Q 102.22222222222223 239.55555555555554 91.55555555555556 224.44444444444446 Q 88.88888888888889 221.77777777777777 85.33333333333333 221.77777777777777 Q 81.77777777777777 221.77777777777777 79.11111111111111 224.44444444444446 Q 69.33333333333333 238.66666666666666 56.888888888888886 250.22222222222223 Q 35.55555555555556 272.44444444444446 6.222222222222222 278.6666666666667 Q 0 279.55555555555554 0 286.6666666666667 Q 1.7777777777777777 292.8888888888889 8 292 Q 25.77777777777778 289.3333333333333 40.888888888888886 280.44444444444446 Q 56 270.6666666666667 66.66666666666667 260 Q 79.11111111111111 248.44444444444446 85.33333333333333 240.44444444444446 Q 92.44444444444444 249.33333333333334 105.77777777777777 262.6666666666667 Q 118.22222222222223 274.22222222222223 135.11111111111111 283.1111111111111 Q 151.11111111111111 292 170.66666666666666 292.8888888888889 Q 190.22222222222223 292 206.22222222222223 283.1111111111111 Q 223.11111111111111 274.22222222222223 235.55555555555554 262.6666666666667 Q 248.88888888888889 249.33333333333334 256 240.44444444444446 L 256 240.44444444444446 L 256 240.44444444444446 L 256 240.44444444444446 L 256 240.44444444444446 Q 263.1111111111111 249.33333333333334 276.44444444444446 262.6666666666667 Q 288.8888888888889 274.22222222222223 305.77777777777777 283.1111111111111 Q 321.77777777777777 292 341.3333333333333 292.8888888888889 Q 360.8888888888889 292 376.8888888888889 283.1111111111111 Q 393.77777777777777 274.22222222222223 406.22222222222223 262.6666666666667 Q 419.55555555555554 249.33333333333334 426.6666666666667 240.44444444444446 Q 432.8888888888889 248.44444444444446 445.3333333333333 260 Q 456 270.6666666666667 471.1111111111111 280.44444444444446 Q 486.22222222222223 289.3333333333333 504 292 Q 510.22222222222223 292.8888888888889 512 286.6666666666667 Q 512 279.55555555555554 505.77777777777777 278.6666666666667 Q 476.44444444444446 272.44444444444446 455.1111111111111 250.22222222222223 Q 442.6666666666667 238.66666666666666 432.8888888888889 224.44444444444446 Q 430.22222222222223 221.77777777777777 426.6666666666667 221.77777777777777 Q 423.1111111111111 221.77777777777777 420.44444444444446 224.44444444444446 Q 409.77777777777777 239.55555555555554 396.44444444444446 252 Q 384.8888888888889 262.6666666666667 370.6666666666667 270.6666666666667 Q 356.44444444444446 278.6666666666667 341.3333333333333 278.6666666666667 Q 326.22222222222223 278.6666666666667 312 270.6666666666667 Q 297.77777777777777 262.6666666666667 286.22222222222223 252 Q 272.8888888888889 239.55555555555554 262.22222222222223 224.44444444444446 L 262.22222222222223 224.44444444444446 Z" />
+            </svg>
+            <span>Дождь с грозой</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Птицы -->
+          <div class="sound-icon" data-sound="birds">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 164.6783625730994 111.78167641325535 Q 158.69005847953215 104.7953216374269 152.7017543859649 96.81091617933723 Q 180.64717348927874 28.943469785575047 204.60038986354775 6.98635477582846 Q 210.588693957115 0.9980506822612085 218.57309941520467 4.990253411306043 Q 224.56140350877192 8.982456140350877 225.55945419103313 16.966861598440545 Q 224.56140350877192 56.888888888888886 240.53021442495125 90.82261208576998 Q 255.50097465886938 123.75828460038986 280.4522417153996 150.7056530214425 L 280.4522417153996 172.66276803118907 L 280.4522417153996 172.66276803118907 Q 251.50877192982455 145.71539961013644 231.54775828460038 108.78752436647173 Q 211.5867446393762 71.85964912280701 209.5906432748538 25.94931773879142 Q 187.6335282651072 49.902534113060426 164.6783625730994 111.78167641325535 L 164.6783625730994 111.78167641325535 Z M 64.87329434697855 37.925925925925924 Q 68.86549707602339 31.937621832358673 75.85185185185185 31.937621832358673 Q 86.83040935672514 32.93567251461988 89.82456140350877 42.916179337231966 Q 100.80311890838206 86.83040935672514 126.75243664717348 117.7699805068226 Q 153.6998050682261 148.70955165692007 187.6335282651072 167.67251461988303 Q 222.5653021442495 186.635477582846 255.50097465886938 196.61598440545808 Q 289.43469785575047 205.59844054580896 312.3898635477583 207.59454191033137 L 320.37426900584796 207.59454191033137 L 320.37426900584796 207.59454191033137 L 320.37426900584796 135.73489278752436 L 320.37426900584796 135.73489278752436 Q 321.37231968810914 104.7953216374269 341.3333333333333 84.83430799220272 Q 361.2943469785575 64.87329434697855 392.233918128655 63.875243664717345 L 492.03898635477583 63.875243664717345 L 492.03898635477583 63.875243664717345 Q 510.0038986354776 65.87134502923976 512 83.83625730994152 Q 512 89.82456140350877 509.00584795321635 95.81286549707602 L 480.0623781676413 137.73099415204678 L 480.0623781676413 137.73099415204678 L 480.0623781676413 295.4230019493177 L 480.0623781676413 295.4230019493177 Q 478.0662768031189 360.2962962962963 435.1500974658869 402.21442495126706 Q 393.23196881091616 445.130604288499 328.35867446393763 447.1267056530214 L 238.53411306042884 447.1267056530214 L 238.53411306042884 447.1267056530214 L 157.69200779727095 509.00584795321635 L 157.69200779727095 509.00584795321635 Q 155.69590643274853 511.00194931773876 152.7017543859649 511.00194931773876 Q 92.81871345029239 509.00584795321635 53.89473684210526 486.0506822612086 Q 15.968810916179336 463.09551656920075 2.9941520467836256 444.1325536062378 Q 0 441.13840155945417 0.9980506822612085 437.14619883040933 Q 2.9941520467836256 433.1539961013645 5.988304093567251 431.1578947368421 L 165.67641325536061 374.2690058479532 L 165.67641325536061 374.2690058479532 Q 142.72124756335282 363.2904483430799 111.78167641325535 338.3391812865497 Q 80.84210526315789 313.3879142300195 57.886939571150094 273.46588693957113 Q 33.93372319688109 233.5438596491228 32.93567251461988 175.6569200779727 Q 33.93372319688109 119.76608187134502 43.914230019493175 85.83235867446393 Q 54.89278752436647 52.89668615984405 64.87329434697855 37.925925925925924 L 64.87329434697855 37.925925925925924 Z M 74.85380116959064 50.900584795321635 Q 66.86939571150097 65.87134502923976 57.886939571150094 95.81286549707602 L 57.886939571150094 95.81286549707602 L 57.886939571150094 95.81286549707602 Q 49.902534113060426 126.75243664717348 48.90448343079922 175.6569200779727 Q 50.900584795321635 236.53801169590642 77.84795321637426 276.4600389863548 Q 104.7953216374269 316.38206627680313 137.73099415204678 338.3391812865497 Q 169.66861598440545 360.2962962962963 187.6335282651072 368.280701754386 Q 192.62378167641324 370.2768031189084 192.62378167641324 375.2670565302144 L 192.62378167641324 376.26510721247564 L 192.62378167641324 376.26510721247564 Q 192.62378167641324 381.25536062378166 187.6335282651072 383.2514619883041 L 22.955165692007796 443.1345029239766 L 22.955165692007796 443.1345029239766 Q 37.925925925925924 459.1033138401559 69.8635477582846 476.0701754385965 Q 102.79922027290448 493.037037037037 149.70760233918128 495.0331384015594 L 230.54970760233917 433.1539961013645 L 230.54970760233917 433.1539961013645 Q 232.54580896686159 431.1578947368421 235.5399610136452 431.1578947368421 L 328.35867446393763 431.1578947368421 L 328.35867446393763 431.1578947368421 Q 386.2456140350877 430.1598440545809 424.17153996101365 391.23586744639374 Q 463.09551656920075 353.3099415204678 464.093567251462 295.4230019493177 L 464.093567251462 135.73489278752436 L 464.093567251462 135.73489278752436 Q 464.093567251462 133.73879142300194 465.09161793372317 131.74269005847952 L 495.0331384015594 86.83040935672514 L 495.0331384015594 86.83040935672514 Q 496.03118908382066 85.83235867446393 496.03118908382066 83.83625730994152 Q 496.03118908382066 79.84405458089668 492.03898635477583 79.84405458089668 L 392.233918128655 79.84405458089668 L 392.233918128655 79.84405458089668 Q 368.280701754386 80.84210526315789 352.31189083820664 95.81286549707602 Q 337.3411306042885 111.78167641325535 336.3430799220273 135.73489278752436 L 336.3430799220273 215.57894736842104 L 336.3430799220273 215.57894736842104 Q 335.34502923976606 222.5653021442495 328.35867446393763 223.5633528265107 L 312.3898635477583 223.5633528265107 L 312.3898635477583 223.5633528265107 L 312.3898635477583 223.5633528265107 L 312.3898635477583 223.5633528265107 L 311.39181286549706 223.5633528265107 L 311.39181286549706 223.5633528265107 Q 286.4405458089669 221.5672514619883 251.50877192982455 211.5867446393762 Q 216.57699805068225 201.60623781676412 179.64912280701753 181.64522417153995 Q 144.71734892787524 161.68421052631578 115.77387914230019 129.7465886939571 Q 87.82846003898635 97.80896686159844 74.85380116959064 51.89863547758284 L 74.85380116959064 50.900584795321635 Z M 384.2495126705653 143.71929824561403 Q 385.2475633528265 128.7485380116959 400.21832358674465 127.75048732943469 Q 415.18908382066274 128.7485380116959 416.187134502924 143.71929824561403 Q 415.18908382066274 158.69005847953215 400.21832358674465 159.68810916179336 Q 385.2475633528265 158.69005847953215 384.2495126705653 143.71929824561403 L 384.2495126705653 143.71929824561403 Z" />
+            </svg>
+            <span>Птицы</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Библиотека -->
+          <div class="sound-icon" data-sound="library">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 32 56 Q 33 32 48 16 L 48 16 L 48 16 Q 64 1 88 0 L 440 0 L 440 0 Q 457 0 468 12 Q 480 23 480 40 L 480 376 L 480 376 Q 478 407 448 415 L 448 496 L 448 496 L 472 496 L 472 496 Q 479 497 480 504 Q 479 511 472 512 L 88 512 L 88 512 Q 64 511 48 496 Q 33 480 32 456 L 32 56 L 32 56 Z M 88 416 Q 71 416 60 428 L 60 428 L 60 428 Q 48 439 48 456 Q 48 473 60 484 Q 71 496 88 496 L 432 496 L 432 496 L 432 416 L 432 416 L 88 416 L 88 416 Z M 48 417 Q 64 401 88 400 L 144 400 L 144 400 L 144 16 L 144 16 L 88 16 L 88 16 Q 71 16 60 28 Q 48 39 48 56 L 48 417 L 48 417 Z M 160 16 L 160 400 L 160 16 L 160 400 L 440 400 L 440 400 Q 462 398 464 376 L 464 40 L 464 40 Q 462 18 440 16 L 160 16 L 160 16 Z M 208 136 Q 209 129 216 128 L 408 128 L 408 128 Q 415 209 416 216 Q 415 223 408 224 L 216 224 L 216 224 Q 209 223 208 216 L 208 216 Z" />
+            </svg>
+            <span>Библиотека</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Кафе -->
+          <div class="sound-icon" data-sound="cafe">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 64 80 Q 73 80 78 73 L 108 24 L 108 24 Q 113 16 122 16 L 390 16 L 390 16 Q 399 16 404 24 L 435 73 L 435 73 Q 439 80 448 80 Q 463 81 464 96 Q 463 111 448 112 L 64 112 L 64 112 Q 49 111 48 96 Q 49 81 64 80 L 64 80 Z M 417 15 Q 408 0 390 0 L 122 0 L 122 0 Q 104 1 95 15 L 64 64 L 64 64 Q 50 64 41 73 Q 32 82 32 96 Q 32 110 41 119 Q 50 128 64 128 L 448 128 L 448 128 Q 462 128 471 119 Q 480 110 480 96 Q 480 82 471 73 Q 462 64 448 64 L 417 15 L 417 15 Z M 79 160 L 107 454 L 79 160 L 107 454 Q 109 479 127 495 Q 145 511 170 512 L 342 512 L 342 512 Q 367 511 385 495 Q 402 479 405 454 L 433 160 L 433 160 L 417 160 L 417 160 L 411 224 L 411 224 L 101 224 L 101 224 L 96 160 L 96 160 L 79 160 L 79 160 Z M 103 240 L 409 240 L 103 240 L 409 240 L 396 384 L 396 384 L 116 384 L 116 384 L 103 240 L 103 240 Z M 118 400 L 394 400 L 118 400 L 394 400 L 389 452 L 389 452 Q 387 471 374 483 Q 361 496 342 496 L 170 496 L 170 496 Q 151 496 138 483 Q 125 471 123 452 L 118 400 L 118 400 Z" />
+            </svg>
+            <span>Кафе</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Речка -->
+          <div class="sound-icon" data-sound="river">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+              <path d="M 286.22222222222223 124 Q 272.8888888888889 111.55555555555556 262.22222222222223 96.44444444444444 Q 256 91.11111111111111 249.77777777777777 96.44444444444444 Q 239.11111111111111 111.55555555555556 225.77777777777777 124 Q 214.22222222222223 134.66666666666666 200 142.66666666666666 Q 185.77777777777777 150.66666666666666 170.66666666666666 150.66666666666666 Q 155.55555555555554 150.66666666666666 141.33333333333334 142.66666666666666 Q 127.11111111111111 134.66666666666666 115.55555555555556 124 Q 102.22222222222223 111.55555555555556 91.55555555555556 96.44444444444444 Q 88.88888888888889 93.77777777777777 85.33333333333333 93.77777777777777 Q 81.77777777777777 93.77777777777777 79.11111111111111 96.44444444444444 Q 69.33333333333333 110.66666666666667 56.888888888888886 122.22222222222223 Q 35.55555555555556 144.44444444444446 6.222222222222222 150.66666666666666 Q 0 151.55555555555554 0 158.66666666666666 Q 1.7777777777777777 164.88888888888889 8 164 Q 25.77777777777778 161.33333333333334 40.888888888888886 152.44444444444446 Q 56 142.66666666666666 66.66666666666667 132 Q 79.11111111111111 120.44444444444444 85.33333333333333 112.44444444444444 Q 92.44444444444444 121.33333333333333 105.77777777777777 134.66666666666666 Q 118.22222222222223 146.22222222222223 135.11111111111111 155.11111111111111 Q 151.11111111111111 164 170.66666666666666 164.88888888888889 Q 190.22222222222223 164 206.22222222222223 155.11111111111111 Q 223.11111111111111 146.22222222222223 235.55555555555554 134.66666666666666 Q 248.88888888888889 121.33333333333333 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 L 256 112.44444444444444 Q 263.1111111111111 121.33333333333333 276.44444444444446 134.66666666666666 Q 288.8888888888889 146.22222222222223 305.77777777777777 155.11111111111111 Q 321.77777777777777 164 341.3333333333333 164.88888888888889 Q 360.8888888888889 164 376.8888888888889 155.11111111111111 Q 393.77777777777777 146.22222222222223 406.22222222222223 134.66666666666666 Q 419.55555555555554 121.33333333333333 426.6666666666667 112.44444444444444 Q 432.8888888888889 120.44444444444444 445.3333333333333 132 Q 456 142.66666666666666 471.1111111111111 152.44444444444446 Q 486.22222222222223 161.33333333333334 504 164 Q 510.22222222222223 164.88888888888889 512 158.66666666666666 Q 512 151.55555555555554 505.77777777777777 150.66666666666666 Q 476.44444444444446 144.44444444444446 455.1111111111111 122.22222222222223 Q 442.6666666666667 110.66666666666667 432.8888888888889 96.44444444444444 Q 430.22222222222223 93.77777777777777 426.6666666666667 93.77777777777777 Q 423.1111111111111 93.77777777777777 420.44444444444446 96.44444444444444 Q 409.77777777777777 111.55555555555556 396.44444444444446 124 Q 384.8888888888889 134.66666666666666 370.6666666666667 142.66666666666666 Q 356.44444444444446 150.66666666666666 341.3333333333333 150.66666666666666 Q 326.22222222222223 150.66666666666666 312 142.66666666666666 Q 297.77777777777777 134.66666666666666 286.22222222222223 124 L 286.22222222222223 124 Z M 286.22222222222223 380 Q 272.8888888888889 367.55555555555554 262.22222222222223 352.44444444444446 Q 256 347.1111111111111 249.77777777777777 352.44444444444446 Q 239.11111111111111 367.55555555555554 225.77777777777777 380 Q 214.22222222222223 390.6666666666667 200 398.6666666666667 Q 185.77777777777777 406.6666666666667 170.66666666666666 406.6666666666667 Q 155.55555555555554 406.6666666666667 141.33333333333334 398.6666666666667 Q 127.11111111111111 390.6666666666667 115.55555555555556 380 Q 102.22222222222223 367.55555555555554 91.55555555555556 352.44444444444446 Q 88.88888888888889 349.77777777777777 85.33333333333333 349.77777777777777 Q 81.77777777777777 349.77777777777777 79.11111111111111 352.44444444444446 Q 69.33333333333333 366.6666666666667 56.888888888888886 378.22222222222223 Q 35.55555555555556 400.44444444444446 6.222222222222222 406.6666666666667 Q 0 407.55555555555554 0 414.6666666666667 Q 1.7777777777777777 420.8888888888889 8 420 Q 25.77777777777778 417.3333333333333 40.888888888888886 408.44444444444446 Q 56 398.6666666666667 66.66666666666667 388 Q 79.11111111111111 376.44444444444446 85.33333333333333 368.44444444444446 Q 92.44444444444444 377.3333333333333 105.77777777777777 390.6666666666667 Q 118.22222222222223 402.22222222222223 135.11111111111111 411.1111111111111 Q 151.11111111111111 420 170.66666666666666 420.8888888888889 Q 190.22222222222223 420 206.22222222222223 411.1111111111111 Q 223.11111111111111 402.22222222222223 235.55555555555554 390.6666666666667 Q 248.88888888888889 377.3333333333333 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 L 256 368.44444444444446 Q 263.1111111111111 377.3333333333333 276.44444444444446 390.6666666666667 Q 288.8888888888889 402.22222222222223 305.77777777777777 411.1111111111111 Q 321.77777777777777 420 341.3333333333333 420.8888888888889 Q 360.8888888888889 420 376.8888888888889 411.1111111111111 Q 393.77777777777777 402.22222222222223 406.22222222222223 390.6666666666667 Q 419.55555555555554 377.3333333333333 426.6666666666667 368.44444444444446 Q 432.8888888888889 376.44444444444446 445.3333333333333 388 Q 456 398.6666666666667 471.1111111111111 408.44444444444446 Q 486.22222222222223 417.3333333333333 504 420 Q 510.22222222222223 420.8888888888889 512 414.6666666666667 Q 512 407.55555555555554 505.77777777777777 406.6666666666667 Q 476.44444444444446 400.44444444444446 455.1111111111111 378.22222222222223 Q 442.6666666666667 366.6666666666667 432.8888888888889 352.44444444444446 Q 430.22222222222223 349.77777777777777 426.6666666666667 349.77777777777777 Q 423.1111111111111 349.77777777777777 420.44444444444446 352.44444444444446 Q 409.77777777777777 367.55555555555554 396.44444444444446 380 Q 384.8888888888889 390.6666666666667 370.6666666666667 398.6666666666667 Q 356.44444444444446 406.6666666666667 341.3333333333333 406.6666666666667 Q 326.22222222222223 406.6666666666667 312 398.6666666666667 Q 297.77777777777777 390.6666666666667 286.22222222222223 380 L 286.22222222222223 380 Z" />
+            </svg>
+            <span>Речка</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+          
+          <!-- Содзу -->
+          <div class="sound-icon" data-sound="wind">
+            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><g><g><path d="M224,170.667c5.896,0,10.667-4.771,10.667-10.667s-4.771-10.667-10.667-10.667h-2.171 c-1.167-5.328-2.695-12.939-4.164-21.551c12.926-0.572,28.23-8.428,41.366-21.574c19.813-19.823,18.271-52.063,18.188-53.427 c-0.292-5.427-4.625-9.76-10.052-10.052c-1.376-0.133-32.151-1.415-52.02,17.081c1.883-15.262,4.786-29.818,6.682-38.477H224 c5.896,0,10.667-4.771,10.667-10.667C234.667,4.771,229.896,0,224,0H117.333c-5.896,0-10.667,4.771-10.667,10.667 c0,5.896,4.771,10.667,10.667,10.667h2.171c2.97,13.565,8.496,41.725,8.496,64c0,22.275-5.526,50.435-8.496,64h-2.171 c-5.896,0-10.667,4.771-10.667,10.667s4.771,10.667,10.667,10.667h2.171c1.896,8.659,4.799,23.215,6.682,38.475 c-19.891-18.518-50.746-17.242-52.072-17.079c-5.427,0.292-9.76,4.625-10.052,10.052c-0.083,1.365-1.625,33.594,18.198,53.385 c13.522,13.522,28.746,20.918,41.431,21.48c-1.475,8.668-3.016,16.331-4.188,21.686h-2.171c-5.896,0-10.667,4.771-10.667,10.667 c0,5.896,4.771,10.667,10.667,10.667h1.561c2.863,18.491,9.105,61.508,9.105,85.333c0,23.826-6.242,66.842-9.105,85.333h-1.561 c-5.896,0-10.667,4.771-10.667,10.667c0,5.896,4.771,10.667,10.667,10.667H224c5.896,0,10.667-4.771,10.667-10.667 c0-5.896-4.771-10.667-10.667-10.667h-1.561c-2.863-18.491-9.105-61.508-9.105-85.333c0-23.826,6.242-66.842,9.105-85.333H224 c5.896,0,10.667-4.771,10.667-10.667c0-5.896-4.771-10.667-10.667-10.667h-2.171c-2.97-13.565-8.496-41.725-8.496-64 c0-22.275,5.526-50.435,8.496-64H224z M126.685,255.625c-3.103,1.246-15.635-1.513-29.341-15.219 c-7.406-7.396-10.271-18.333-11.354-26.417c8.104,1.083,19.063,3.938,26.469,11.344c7.563,7.553,13.078,16.478,14.855,23.685 C127.135,251.214,126.923,253.415,126.685,255.625z M141.32,21.333h58.693c-3.26,15.499-8.013,41.789-8.013,64 s4.753,48.501,8.013,64H141.32c3.26-15.499,8.013-41.789,8.013-64S144.581,36.832,141.32,21.333z M141.32,170.667h58.693 c-3.26,15.499-8.013,41.789-8.013,64s4.753,48.501,8.013,64H141.32c3.26-15.499,8.013-41.789,8.013-64 S144.581,186.165,141.32,170.667z M200.848,490.667h-60.362c3.122-20.438,8.848-61.173,8.848-85.333s-5.725-64.896-8.848-85.333 h60.362c-3.122,20.438-8.848,61.173-8.848,85.333S197.725,470.229,200.848,490.667z M216.135,106.667 c-0.667,0-1.092-0.082-1.467-0.169c-0.246-2.268-0.462-4.53-0.646-6.785c1.788-7.229,7.303-16.152,14.853-23.702 c7.396-7.406,18.333-10.271,26.427-11.354c-1.094,8.104-3.948,19.063-11.354,26.469c-10.729,10.74-21.698,15.542-27.802,15.542 H216.135z"></path><path d="M447.938,394.115c-0.292-5.427-4.625-9.76-10.052-10.052c-1.367-0.143-32.214-1.424-52.078,17.129 c1.882-15.279,4.79-29.857,6.689-38.525h2.171c5.896,0,10.667-4.771,10.667-10.667c0-5.896-4.771-10.667-10.667-10.667h-1.561 c-2.141-13.827-6.158-41.299-8.057-64.307c0.615,0.038,1.112,0.307,1.743,0.307c0,0,0.01,0,0.021,0 c13.219,0,29.25-8.146,42.885-21.792c19.813-19.823,18.271-52.063,18.188-53.427c-0.292-5.427-4.625-9.76-10.052-10.052 c-1.328-0.158-29.999-1.237-49.866,15.316c1.813-14.63,3.823-28.22,5.138-36.712h1.561c5.896,0,10.667-4.771,10.667-10.667 s-4.771-10.667-10.667-10.667H288c-5.896,0-10.667,4.771-10.667,10.667s4.771,10.667,10.667,10.667h1.561 c2.764,17.852,8.648,58.471,9.055,82.712c-0.145-0.146-0.262-0.306-0.408-0.452c-19.823-19.771-52.115-18.323-53.417-18.177 c-5.427,0.292-9.771,4.625-10.063,10.052c-0.083,1.365-1.625,33.583,18.198,53.406c13.033,13.013,27.473,20.25,39.822,21.319 c-1.198,8.701-2.336,16.307-3.188,21.806H288c-5.896,0-10.667,4.771-10.667,10.667c0,5.896,4.771,10.667,10.667,10.667h2.171 c2.97,13.565,8.496,41.725,8.496,64s-5.526,50.435-8.496,64H288c-5.896,0-10.667,4.771-10.667,10.667 c0,5.896,4.771,10.667,10.667,10.667h106.667c5.896,0,10.667-4.771,10.667-10.667c0-5.896-4.771-10.667-10.667-10.667h-2.171 c-1.167-5.326-2.694-12.934-4.163-21.544c12.936-0.553,28.264-8.418,41.417-21.581 C449.563,427.719,448.021,395.479,447.938,394.115z M295.432,298.579c-4.957-0.1-15.733-3.784-27.422-15.465 c-7.406-7.406-10.271-18.344-11.354-26.438c8.104,1.083,19.063,3.948,26.469,11.344c6.254,6.254,10.935,13.361,13.479,19.833 C296.238,291.415,295.852,295,295.432,298.579z M370.68,490.667h-58.693c3.26-15.499,8.013-41.789,8.013-64 s-4.753-48.501-8.013-64h58.693c-3.26,15.499,8.013-41.789,8.013-64S367.419,475.168,370.68,490.667z M371.514,341.333h-60.362 C314.275,320.896,320,280.16,320,256s-5.725-64.896-8.848-85.333h60.362c-3.122,20.438-8.848,61.173-8.848,85.333 S368.392,320.896,371.514,341.333z M384.061,252.81c0.008-0.395,0.012-0.776,0.022-1.18c0.698-5.439,4.742-15.57,15.458-26.286 c7.396-7.406,18.333-10.271,26.427-11.354c-1.094,8.104-3.948,19.063-11.354,26.469C403.885,251.198,392.917,256,386.813,256 h-0.01c-1.583,0-2.25-0.344-2.354-0.448C384.077,255.178,384.039,254.026,384.061,252.81z M414.667,432.458 C403.938,443.198,392.969,448,386.865,448h-0.01c-0.69,0-1.141-0.082-1.52-0.174c-0.241-2.225-0.452-4.443-0.634-6.655 c1.746-7.238,7.293-16.227,14.893-23.827c7.396-7.406,18.333-10.271,26.427-11.354C424.927,414.094,422.073,425.052,414.667,432.458z"></path></g></g></g></svg>
+            <span>Содзу</span>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="sound-volume">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Таймер с новыми функциями -->
+  <div class="modal" id="timer-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Таймер</h2>
+        <button class="close-btn" id="close-timer">&times;</button>
+      </div>
+      <div class="option-group">
+        <h3 class="option-title">Установите таймер</h3>
+        <input type="number" id="timer-minutes" class="timer-input" placeholder="Минуты" min="1" value="25">
+        <div class="timer-presets">
+          <button class="preset-btn" data-minutes="5">5 мин</button>
+          <button class="preset-btn" data-minutes="15">15 мин</button>
+          <button class="preset-btn" data-minutes="25">25 мин</button>
+          <button class="preset-btn" data-minutes="45">45 мин</button>
+          <button class="preset-btn" data-minutes="60">60 мин</button>
+        </div>
+        <div class="timer-display" id="timer-display">25:00</div>
+        <div class="timer-controls">
+          <button class="timer-btn" id="start-timer">Старт</button>
+          <button class="timer-btn" id="pause-timer">Пауза</button>
+          <button class="timer-btn" id="reset-timer">Сброс</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification"></div>
+
+  <script>
+    // Объекты для хранения состояния
+    const state = {
+      background: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      musicUrl: '',
+      sound: '',
+      soundVolumes: {
+        'fire': 0.5,
+        'waves': 0.5,
+        'light-rain': 0.5,
+        'heavy-rain': 0.5,
+        'thunder-rain': 0.5,
+        'birds': 0.5,
+        'library': 0.5,
+        'cafe': 0.5,
+        'river': 0.5,
+        'wind': 0.5
+      },
+      timer: {
+        minutes: 0,
+        seconds: 0,
+        running: false,
+        interval: null,
+        totalSeconds: 0
+      },
+      // Новые настройки
+      timerSound: 'https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3',
+      defaultTimerSound: 'https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3',
+      customTimerSound: null,
+      timerSoundVolume: 0.5,
+      autoRestartTimer: false,
+      theme: 'default' // Тема по умолчанию
+    };
+
+    // DOM элементы
+    const clockElement = document.getElementById('clock');
+    const settingsBtn = document.getElementById('settings-btn');
+    const musicBtn = document.getElementById('music-btn');
+    const soundBtn = document.getElementById('sound-btn');
+    const timerBtn = document.getElementById('timer-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const musicModal = document.getElementById('music-modal');
+    const soundModal = document.getElementById('sound-modal');
+    const timerModal = document.getElementById('timer-modal');
+    const notification = document.getElementById('notification');
+    const backgroundContainer = document.getElementById('background-container');
+    
+    // Глобальный аудио элемент для фоновых звуков
+    let backgroundAudio = new Audio();
+    backgroundAudio.loop = true;
+    
+    // Аудио элемент для звука таймера (единый экземпляр)
+    let timerSoundAudio = new Audio();
+    
+    // Инициализация фона
+    function initBackground() {
+      backgroundContainer.style.backgroundImage = `url(${state.background})`;
+    }
+    
+    // Часы
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      clockElement.textContent = `${hours}:${minutes}`;
+    }
+    
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // Модальные окна
+    function openModal(modal) {
+      modal.style.display = 'flex';
+    }
+    
+    function closeModal(modal) {
+      modal.style.display = 'none';
+    }
+    
+    // Обработчики кнопок
+    settingsBtn.addEventListener('click', () => openModal(settingsModal));
+    musicBtn.addEventListener('click', () => openModal(musicModal));
+    soundBtn.addEventListener('click', () => openModal(soundModal));
+    timerBtn.addEventListener('click', () => openModal(timerModal));
+    
+    // Закрытие модальных окон
+    document.getElementById('close-settings').addEventListener('click', () => closeModal(settingsModal));
+    document.getElementById('close-music').addEventListener('click', () => closeModal(musicModal));
+    document.getElementById('close-sound').addEventListener('click', () => closeModal(soundModal));
+    document.getElementById('close-timer').addEventListener('click', () => closeModal(timerModal));
+    
+    // Закрытие модалок по клику вне области
+    window.addEventListener('click', (e) => {
+      if (e.target === settingsModal) closeModal(settingsModal);
+      if (e.target === musicModal) closeModal(musicModal);
+      if (e.target === soundModal) closeModal(soundModal);
+      if (e.target === timerModal) closeModal(timerModal);
+    });
+    
+    // Настройки фона
+    const bgUpload = document.getElementById('bg-upload');
+    const uploadBg = document.getElementById('upload-bg');
+    
+    uploadBg.addEventListener('click', () => {
+      bgUpload.click();
+    });
+    
+    bgUpload.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          state.background = e.target.result;
+          backgroundContainer.style.backgroundImage = `url(${state.background})`;
+          showNotification('Фон успешно изменен!');
+        }
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+    
+    // Музыка
+    document.getElementById('play-music').addEventListener('click', () => {
+      const musicLink = document.getElementById('music-link').value;
+      if (!musicLink) {
+        showNotification('Введите ссылку на музыку');
+        return;
+      }
+      
+      // Поддержка различных сервисов
+      let embedUrl = '';
+      let playerHTML = '';
+      
+      // YouTube
+      if (musicLink.includes('youtube.com') || musicLink.includes('youtu.be')) {
+        const videoId = extractYouTubeId(musicLink);
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          playerHTML = `
+            <iframe width="100%" height="200" 
+              src="${embedUrl}" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          `;
+        }
+      }
+      // Spotify
+      else if (musicLink.includes('spotify.com')) {
+        const spotifyId = musicLink.split('/').pop();
+        embedUrl = `https://open.spotify.com/embed/track/${spotifyId}`;
+        playerHTML = `
+          <iframe src="${embedUrl}" width="100%" height="200" 
+            frameborder="0" allowtransparency="true" 
+            allow="encrypted-media">
+          </iframe>
+        `;
+      }
+      // Яндекс.Музыка
+      else if (musicLink.includes('music.yandex.ru')) {
+        const trackRegex = /track\/(\d+)/;
+        const match = musicLink.match(trackRegex);
+        if (match && match[1]) {
+          const trackId = match[1];
+          playerHTML = `
+            <iframe frameborder="0" style="border:none;width:100%;height:200px;" 
+              src="https://music.yandex.ru/iframe/#track/${trackId}">
+            </iframe>
+          `;
+        } else {
+          showNotification('Неправильный формат ссылки Яндекс.Музыки');
+          return;
+        }
+      }
+      // SoundCloud
+      else if (musicLink.includes('soundcloud.com')) {
+        embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(musicLink)}&auto_play=true`;
+        playerHTML = `
+          <iframe width="100%" height="200" scrolling="no" frameborder="no"
+            src="${embedUrl}">
+          </iframe>
+        `;
+      }
+      
+      if (!playerHTML) {
+        showNotification('Неподдерживаемый сервис или неверная ссылка');
+        return;
+      }
+      
+      // Создаем плеер
+      const playerContainer = document.getElementById('player');
+      playerContainer.innerHTML = playerHTML;
+      
+      state.musicUrl = musicLink;
+      musicBtn.classList.add('active');
+    });
+    
+    function extractYouTubeId(url) {
+      const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[7].length === 11) ? match[7] : null;
+    }
+    
+    // Фоновые звуки
+    const sounds = {
+      fire: 'sounds/fire.mp3',
+      waves: 'sounds/waves.mp3',
+      'light-rain': 'sounds/light-rain.mp3',
+      'heavy-rain': 'sounds/heavy-rain.mp3',
+      'thunder-rain': 'sounds/thunder-rain.mp3',
+      birds: 'sounds/birds.mp3',
+      library: 'sounds/library.mp3',
+      cafe: 'sounds/cafe.mp3',
+      river: 'sounds/river.mp3',
+      wind: 'sounds/wind.mp3'
+    };
+    
+    // Воспроизведение фонового звука
+    function playBackgroundSound(soundKey, volume) {
+      // Если звук не выбран - останавливаем воспроизведение
+      if (!soundKey) {
+        backgroundAudio.pause();
+        backgroundAudio.src = '';
+        soundBtn.classList.remove('active');
+        return;
+      }
+      
+      try {
+        backgroundAudio.src = sounds[soundKey];
+        backgroundAudio.volume = volume;
+        
+        // Попытка воспроизведения
+        const playPromise = backgroundAudio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            soundBtn.classList.add('active');
+          }).catch(error => {
+            console.log("Автовоспроизведение заблокировано:", error);
+          });
+        }
+      } catch (e) {
+        console.error("Ошибка воспроизведения звука:", e);
+      }
+    }
+    
+    // Получение названия звука
+    function getSoundName(soundKey) {
+      const names = {
+        'fire': "Костер",
+        'waves': "Волны",
+        'light-rain': "Тихий дождь",
+        'heavy-rain': "Сильный дождь",
+        'thunder-rain': "Дождь с грозой",
+        'birds': "Птицы",
+        'library': "Библиотека",
+        'cafe': "Кафе",
+        'river': "Речка",
+        'wind': "Содзу"
+      };
+      return names[soundKey] || "Неизвестный звук";
+    }
+    
+    // Обработка выбора звука
+    document.querySelectorAll('.sound-icon').forEach(item => {
+      const soundKey = item.getAttribute('data-sound');
+      const volumeControl = item.querySelector('.sound-volume');
+      
+      // Установка начальной громкости
+      volumeControl.value = state.soundVolumes[soundKey];
+      
+      // Обработчик клика на иконку звука
+      item.addEventListener('click', (e) => {
+        // Игнорируем клики на ползунке громкости
+        if (e.target === volumeControl) return;
+        
+        // Удаляем активный класс у всех элементов
+        document.querySelectorAll('.sound-icon').forEach(el => {
+          el.classList.remove('active');
+        });
+        
+        // Если кликнули на текущий активный звук - выключаем
+        if (state.sound === soundKey) {
+          state.sound = '';
+          soundBtn.classList.remove('active');
+          backgroundAudio.pause();
+          backgroundAudio.src = '';
+        } else {
+          // Добавляем активный класс только к выбранному
+          item.classList.add('active');
+          state.sound = soundKey;
+          
+          // Воспроизводим звук с текущей громкостью
+          playBackgroundSound(soundKey, state.soundVolumes[soundKey]);
+        }
+      });
+      
+      // Обработчик изменения громкости
+      volumeControl.addEventListener('input', (e) => {
+        e.stopPropagation(); // Предотвращаем всплытие
+        
+        const volume = parseFloat(e.target.value);
+        state.soundVolumes[soundKey] = volume;
+        
+        // Если этот звук сейчас играет, обновляем громкость
+        if (state.sound === soundKey) {
+          backgroundAudio.volume = volume;
+        }
+      });
+    });
+    
+    // Таймер
+    const timerDisplay = document.getElementById('timer-display');
+    const timerMinutesInput = document.getElementById('timer-minutes');
+    const startTimerBtn = document.getElementById('start-timer');
+    const pauseTimerBtn = document.getElementById('pause-timer');
+    const resetTimerBtn = document.getElementById('reset-timer');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const previewBtn = document.getElementById('preview-btn');
+    const timerSoundVolume = document.getElementById('timer-sound-volume');
+    const autoRestart = document.getElementById('auto-restart');
+    const uploadTimerSoundBtn = document.getElementById('upload-timer-sound');
+    const timerSoundUpload = document.getElementById('timer-sound-upload');
+    const resetTimerSoundBtn = document.getElementById('reset-timer-sound');
+    
+    let timerInterval;
+    let timeRemaining = 0;
+    let isPaused = false;
+    
+    function updateDisplay(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Функция разблокировки аудио
+    function unlockAudio() {
+      if (state.timerSound) {
+        // Создаем копию с нулевой громкостью
+        const audio = new Audio();
+        audio.volume = 0;
+        audio.src = state.timerSound;
+        audio.play().then(() => {
+          audio.pause();
+        }).catch(e => console.log("Unlock attempt failed", e));
+      }
+    }
+    
+    function startTimer() {
+      if (timerInterval) return;
+      
+      if (!timeRemaining || timeRemaining <= 0) {
+        const minutes = parseInt(timerMinutesInput.value);
+        if (isNaN(minutes) || minutes < 1) return;
+        timeRemaining = minutes * 60;
+      }
+      
+      // Попытка разблокировки аудио
+      unlockAudio();
+      
+      timerInterval = setInterval(() => {
+        if (!isPaused) {
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            
+            // Воспроизводим звук окончания
+            playTimerSound();
+            
+            // Авторестарт таймера
+            if (state.autoRestartTimer) {
+              const minutes = parseInt(timerMinutesInput.value);
+              timeRemaining = minutes * 60;
+              updateDisplay(timeRemaining);
+              startTimer();
+            } else {
+              showNotification('⏰ Время вышло!');
+            }
+            return;
+          }
+          timeRemaining--;
+          updateDisplay(timeRemaining);
+        }
+      }, 1000);
+    }
+    
+    function playTimerSound() {
+      // Останавливаем предыдущее воспроизведение
+      timerSoundAudio.pause();
+      timerSoundAudio.currentTime = 0;
+      
+      // Проверяем наличие звука
+      if (!state.timerSound) {
+        console.log("Звук таймера не установлен");
+        return;
+      }
+      
+      // Устанавливаем источник и громкость
+      timerSoundAudio.src = state.timerSound;
+      timerSoundAudio.volume = state.timerSoundVolume;
+      
+      // Попытка воспроизведения
+      timerSoundAudio.play().catch(error => {
+        console.log("Автовоспроизведение заблокировано. Нажмите 'Прослушать' для активации.");
+        showNotification("Автовоспроизведение заблокировано. Нажмите 'Прослушать' для активации.");
+      });
+    }
+    
+    function pauseTimer() {
+      isPaused = !isPaused;
+      pauseTimerBtn.textContent = isPaused ? 'Продолжить' : 'Пауза';
+    }
+    
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isPaused = false;
+      pauseTimerBtn.textContent = 'Пауза';
+      const minutes = parseInt(timerMinutesInput.value);
+      timeRemaining = minutes * 60;
+      updateDisplay(timeRemaining);
+      
+      // Останавливаем звук таймера
+      timerSoundAudio.pause();
+      timerSoundAudio.currentTime = 0;
+    }
+    
+    // Превью звука таймера
+    previewBtn.addEventListener('click', () => {
+      unlockAudio();
+      playTimerSound();
+    });
+    
+    // Обновление громкости звука таймера
+    timerSoundVolume.addEventListener('input', (e) => {
+      state.timerSoundVolume = parseFloat(e.target.value);
+      // Обновляем громкость в реальном времени
+      timerSoundAudio.volume = state.timerSoundVolume;
+    });
+    
+    // Авторестарт таймера
+    autoRestart.addEventListener('change', (e) => {
+      state.autoRestartTimer = e.target.checked;
+    });
+    
+    // Когда пользователь вводит своё время вручную
+    timerMinutesInput.addEventListener('input', () => {
+      const minutes = parseInt(timerMinutesInput.value);
+      if (!isNaN(minutes) && minutes >= 1 && minutes <= 180) {
+        timeRemaining = minutes * 60;
+        updateDisplay(timeRemaining);
+      }
+    });
+    
+    presetBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const minutes = parseInt(btn.dataset.minutes);
+        timerMinutesInput.value = minutes;
+        resetTimer();
+      });
+    });
+    
+    startTimerBtn.addEventListener('click', startTimer);
+    pauseTimerBtn.addEventListener('click', pauseTimer);
+    resetTimerBtn.addEventListener('click', resetTimer);
+    
+    // Загрузка пользовательского звука для таймера
+    uploadTimerSoundBtn.addEventListener('click', () => {
+      timerSoundUpload.click();
+    });
+    
+    timerSoundUpload.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
+        if (file.type.startsWith('audio/')) {
+          // Освобождаем предыдущий Blob URL, если был
+          if (state.customTimerSound) {
+            URL.revokeObjectURL(state.customTimerSound);
+          }
+          state.customTimerSound = URL.createObjectURL(file);
+          state.timerSound = state.customTimerSound;
+          showNotification('Звук для таймера загружен!');
+        } else {
+          showNotification('Пожалуйста, выберите аудио файл');
+        }
+      }
+    });
+    
+    // Сброс звука таймера на стандартный
+    resetTimerSoundBtn.addEventListener('click', () => {
+      // Останавливаем текущий звук
+      timerSoundAudio.pause();
+      timerSoundAudio.currentTime = 0;
+      
+      // Освобождаем Blob URL, если был пользовательский звук
+      if (state.customTimerSound) {
+        URL.revokeObjectURL(state.customTimerSound);
+        state.customTimerSound = null;
+      }
+      
+      // Возвращаем стандартный звук
+      state.timerSound = state.defaultTimerSound;
+      showNotification('Звук таймера сброшен на стандартный');
+    });
+    
+    // Применение темы
+    function applyTheme(theme) {
+      // Удаляем все классы тем
+      document.body.classList.remove(
+        'theme-default',
+        'theme-forest',
+        'theme-night',
+        'theme-sunset',
+        'theme-ocean',
+        'theme-library'
+      );
+      
+      // Добавляем класс текущей темы
+      document.body.classList.add(`theme-${theme}`);
+      
+      // Сохраняем тему в состоянии
+      state.theme = theme;
+    }
+    
+    // Обработчики выбора темы
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.theme-option').forEach(el => {
+          el.classList.remove('active');
+        });
+        option.classList.add('active');
+        
+        const theme = option.dataset.theme;
+        applyTheme(theme);
+        showNotification(`Тема "${option.dataset.name}" применена`);
+      });
+    });
+    
+    // Settings tabs
+    document.querySelectorAll('.settings-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Удаляем активный класс у всех вкладок и контента
+        document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.settings-content').forEach(c => c.classList.remove('active'));
+        
+        // Добавляем активный класс текущей вкладке
+        tab.classList.add('active');
+        
+        // Показываем соответствующий контент
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById(`${tabId}-content`).classList.add('active');
+      });
+    });
+    
+    // Уведомления
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Сохранение состояния при перезагрузке
+    window.addEventListener('beforeunload', () => {
+      // Подготовка данных для сохранения
+      const saveState = {
+        background: state.background,
+        musicUrl: state.musicUrl,
+        sound: state.sound,
+        soundVolumes: state.soundVolumes,
+        timer: state.timer,
+        timerSound: state.timerSound.startsWith('blob:') ? state.defaultTimerSound : state.timerSound,
+        timerSoundVolume: state.timerSoundVolume,
+        autoRestartTimer: state.autoRestartTimer,
+        theme: state.theme
+      };
+      
+      localStorage.setItem('focusState', JSON.stringify(saveState));
+    });
+    
+    // Восстановление состояния
+    window.addEventListener('load', () => {
+      const savedState = localStorage.getItem('focusState');
+      if (savedState) {
+        const parsedState = JSON.parse(savedState);
+        
+        // Проверка на валидность сохраненного звука таймера
+        if (parsedState.timerSound && parsedState.timerSound.startsWith('blob:')) {
+          parsedState.timerSound = state.defaultTimerSound;
+        }
+        
+        Object.assign(state, parsedState);
+        
+        // Восстановление фона
+        if (state.background) {
+          backgroundContainer.style.backgroundImage = `url(${state.background})`;
+        }
+        
+        // Восстановление звука
+        if (state.sound) {
+          // Активируем соответствующий пункт в меню
+          const soundItem = document.querySelector(`.sound-icon[data-sound="${state.sound}"]`);
+          if (soundItem) {
+            soundItem.classList.add('active');
+            playBackgroundSound(state.sound, state.soundVolumes[state.sound]);
+          }
+          
+          // Восстановление громкости
+          document.querySelectorAll('.sound-volume').forEach(control => {
+            const soundKey = control.parentElement.getAttribute('data-sound');
+            control.value = state.soundVolumes[soundKey];
+          });
+        } else {
+          soundBtn.classList.remove('active');
+        }
+        
+        // Восстановление музыки
+        if (state.musicUrl) {
+          document.getElementById('music-link').value = state.musicUrl;
+          musicBtn.classList.add('active');
+        }
+        
+        // Восстановление таймера
+        if (state.timer.minutes > 0 || state.timer.seconds > 0) {
+          updateDisplay(state.timer.minutes * 60 + state.timer.seconds);
+          if (state.timer.running) {
+            timerBtn.classList.add('active');
+            // Перезапускаем таймер только если он был запущен
+            startTimer();
+          }
+        }
+        
+        // Восстановление настроек таймера
+        timerSoundVolume.value = state.timerSoundVolume;
+        autoRestart.checked = state.autoRestartTimer;
+        
+        // Восстановление темы
+        if (state.theme) {
+          applyTheme(state.theme);
+          document.querySelector(`.theme-option[data-theme="${state.theme}"]`).classList.add('active');
+        }
+      } else {
+        // Установка фона по умолчанию
+        initBackground();
+      }
+      
+      // Инициализация таймера
+      timeRemaining = parseInt(timerMinutesInput.value) * 60;
+      updateDisplay(timeRemaining);
+      
+      // Установка громкости звука таймера
+      timerSoundAudio.volume = state.timerSoundVolume;
+    });
+    
+    // Инициализация приложения
+    initBackground();
+    applyTheme(state.theme);
+  </script>
+</body>
+</html>
