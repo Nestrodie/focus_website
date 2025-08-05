@@ -115,14 +115,14 @@
     }
     
     .bottom-logo img {
-  height: 120px; /* Было 40px */
-}
+      height: 120px;
+    }
 
-@media (max-width: 480px) {
-  .bottom-logo img {
-    height: 90px; /* Было 30px */
-  }
-}
+    @media (max-width: 480px) {
+      .bottom-logo img {
+        height: 90px;
+      }
+    }
     
     /* Цитата */
     .quote-container {
@@ -130,6 +130,8 @@
       margin-bottom: 30px;
       max-width: 90%;
       padding: 0 20px;
+      max-height: 25vh;
+      overflow: hidden;
     }
     
     .quote {
@@ -141,6 +143,11 @@
       line-height: 1.4;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       transition: all 0.3s ease;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .clock {
@@ -474,6 +481,38 @@
       }
       .bottom-logo img {
         height: 30px;
+      }
+    }
+    
+    /* Адаптация для очень маленьких экранов */
+    @media (max-width: 350px) {
+      .clock {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+      .quote {
+        font-size: 1.1rem;
+      }
+      .quote-container {
+        max-height: 20vh;
+      }
+      .buttons {
+        gap: 8px;
+        padding: 8px;
+      }
+      .btn {
+        width: 36px;
+        height: 36px;
+      }
+      .btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .bottom-logo img {
+        height: 70px;
+      }
+      .timer-display {
+        font-size: 1.8em;
       }
     }
     
@@ -1404,6 +1443,7 @@
           state.background = e.target.result;
           backgroundContainer.style.backgroundImage = `url(${state.background})`;
           showNotification('Фон успешно изменен!');
+          saveState();
         }
         reader.readAsDataURL(this.files[0]);
       }
@@ -1484,6 +1524,7 @@
       
       state.musicUrl = musicLink;
       musicBtn.classList.add('active');
+      saveState();
     });
     
     function extractYouTubeId(url) {
@@ -1584,6 +1625,7 @@
           // Воспроизводим звук с текущей громкостью
           playBackgroundSound(soundKey, state.soundVolumes[soundKey]);
         }
+        saveState();
       });
       
       // Обработчик изменения громкости
@@ -1597,6 +1639,7 @@
         if (state.sound === soundKey) {
           backgroundAudio.volume = volume;
         }
+        saveState();
       });
     });
     
@@ -1727,11 +1770,13 @@
       state.timerSoundVolume = parseFloat(e.target.value);
       // Обновляем громкость в реальном времени
       timerSoundAudio.volume = state.timerSoundVolume;
+      saveState();
     });
     
     // Авторестарт таймера
     autoRestart.addEventListener('change', (e) => {
       state.autoRestartTimer = e.target.checked;
+      saveState();
     });
     
     // Когда пользователь вводит своё время вручную
@@ -1771,6 +1816,7 @@
           state.customTimerSound = URL.createObjectURL(file);
           state.timerSound = state.customTimerSound;
           showNotification('Звук для таймера загружен!');
+          saveState();
         } else {
           showNotification('Пожалуйста, выберите аудио файл');
         }
@@ -1792,6 +1838,7 @@
       // Возвращаем стандартный звук
       state.timerSound = state.defaultTimerSound;
       showNotification('Звук таймера сброшен на стандартный');
+      saveState();
     });
     
     // Применение темы
@@ -1824,6 +1871,7 @@
         const theme = option.dataset.theme;
         applyTheme(theme);
         showNotification(`Тема "${option.dataset.name}" применена`);
+        saveState();
       });
     });
     
@@ -1853,27 +1901,13 @@
       }, 3000);
     }
     
-    // Сохранение состояния при перезагрузке
-    window.addEventListener('beforeunload', () => {
-      // Подготовка данных для сохранения
-      const saveState = {
-        background: state.background,
-        musicUrl: state.musicUrl,
-        sound: state.sound,
-        soundVolumes: state.soundVolumes,
-        timer: state.timer,
-        timerSound: state.timerSound.startsWith('blob:') ? state.defaultTimerSound : state.timerSound,
-        timerSoundVolume: state.timerSoundVolume,
-        autoRestartTimer: state.autoRestartTimer,
-        theme: state.theme,
-        quoteSettings: state.quoteSettings
-      };
-      
-      localStorage.setItem('focusState', JSON.stringify(saveState));
-    });
+    // Сохранение состояния
+    function saveState() {
+      localStorage.setItem('focusState', JSON.stringify(state));
+    }
     
     // Восстановление состояния
-    window.addEventListener('load', () => {
+    function loadState() {
       const savedState = localStorage.getItem('focusState');
       if (savedState) {
         const parsedState = JSON.parse(savedState);
@@ -1957,10 +1991,19 @@
       
       // Установка громкости звука таймера
       timerSoundAudio.volume = state.timerSoundVolume;
-      
-      // Инициализация приложения
+    }
+    
+    // Инициализация приложения
+    window.addEventListener('load', () => {
+      loadState();
       initApp();
     });
+    
+    // Периодическое сохранение состояния
+    setInterval(saveState, 30000); // Сохраняем каждые 30 секунд
+    
+    // Сохраняем при закрытии страницы
+    window.addEventListener('beforeunload', saveState);
   </script>
 </body>
 </html>
