@@ -899,6 +899,37 @@
       height: 16px;
       fill: currentColor;
     }
+
+    /* ============== ИЗМЕНЕНИЯ ДЛЯ ИКОНОК ============== */
+    /* Уменьшаем толщину линий для конкретных иконок */
+    .sound-icon[data-sound="light-rain"] svg,
+    .sound-icon[data-sound="thunder-rain"] svg,
+    .sound-icon[data-sound="wind"] svg {
+      /* Уменьшаем толщину линий */
+      stroke-width: 0.4px;
+      /* Делаем заливку более тонкой */
+      fill-opacity: 0.7;
+    }
+
+    /* Для мобильных делаем линии немного тоньше */
+    @media (max-width: 768px) {
+      .sound-icon[data-sound="light-rain"] svg,
+      .sound-icon[data-sound="thunder-rain"] svg,
+      .sound-icon[data-sound="wind"] svg {
+        stroke-width: 0.3px;
+        fill-opacity: 0.65;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sound-icon[data-sound="light-rain"] svg,
+      .sound-icon[data-sound="thunder-rain"] svg,
+      .sound-icon[data-sound="wind"] svg {
+        stroke-width: 0.3px;
+        fill-opacity: 0.6;
+      }
+    }
+    /* ============== КОНЕЦ ИЗМЕНЕНИЙ ============== */
   </style>
 </head>
 <body>
